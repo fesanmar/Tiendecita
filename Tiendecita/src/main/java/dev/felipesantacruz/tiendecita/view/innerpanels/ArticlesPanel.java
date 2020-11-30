@@ -9,7 +9,6 @@ import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import dev.felipesantacruz.tiendecita.controllers.ArticleController;
 import dev.felipesantacruz.tiendecita.model.Article;
@@ -26,12 +25,15 @@ public class ArticlesPanel extends JPanel
 	private JFormattedTextField tfPrice;
 	private ArticleController controller;
 	private JSpinner spStock;
+	private JButton btnNew;
 
 	public ArticlesPanel(ArticleController articleController)
 	{
 		controller = articleController;
 		setLayout(null);
 		setUpComponents();
+		clearForm();
+		setUpListeners();
 
 	}
 
@@ -42,7 +44,6 @@ public class ArticlesPanel extends JPanel
 		setUpButtons();
 		setUpSpinners();
 		setUpTable();
-		setUpListeners();
 	}
 
 	private void setUpLabels()
@@ -76,7 +77,6 @@ public class ArticlesPanel extends JPanel
 		tfId.setBounds(390, 45, 62, 20);
 		add(tfId);
 		tfId.setColumns(10);
-		tfId.setText(String.valueOf(0));
 
 		tfDescription = new JTextField();
 		tfDescription.setBounds(390, 96, 155, 20);
@@ -102,7 +102,7 @@ public class ArticlesPanel extends JPanel
 		btnEliminar.setBounds(474, 255, 71, 23);
 		add(btnEliminar);
 
-		JButton btnNew = new JButton("Nuevo");
+		btnNew = new JButton("Nuevo");
 		btnNew.setBounds(474, 44, 71, 23);
 		add(btnNew);
 	}
@@ -126,8 +126,36 @@ public class ArticlesPanel extends JPanel
 
 	private void setUpListeners()
 	{
+		setUpActionListeners();
+		setUpSelectionListeners();
+		
+	}
+
+	private void setUpActionListeners()
+	{
+		btnNew.addActionListener(e -> clearForm());
+	}
+	
+	private void clearForm()
+	{
+		tfId.setText(String.valueOf(0));
+		tfDescription.setText("");
+		tfPrice.setValue(0.00);
+		spStock.setValue(0);
+		tableArticles.clearSelection();
+		controller.setActiveArticle(new Article());
+	}
+
+	private void setUpSelectionListeners()
+	{
 		ListSelectionModel selectionModel = tableArticles.getSelectionModel();
-		selectionModel.addListSelectionListener(e -> selectNewArticle());
+		selectionModel.addListSelectionListener(this::manageTableSelection);
+	}
+	
+	private void manageTableSelection(ListSelectionEvent e)
+	{
+		if(e.getValueIsAdjusting())
+			selectNewArticle();	
 	}
 
 	private void selectNewArticle()
