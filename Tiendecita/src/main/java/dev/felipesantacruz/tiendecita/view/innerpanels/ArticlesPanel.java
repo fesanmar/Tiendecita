@@ -1,6 +1,7 @@
 package dev.felipesantacruz.tiendecita.view.innerpanels;
 
 import static java.lang.String.valueOf;
+import static java.lang.String.format;
 
 import java.math.BigDecimal;
 
@@ -35,8 +36,9 @@ public class ArticlesPanel extends JPanel
 	private JSpinner spStock;
 	private JButton btnNew;
 	private JButton btnSave;
-	
-	private ListSelectionListener tableSelectionListener = this::manageTableSelection; 
+	private String verb;
+
+	private ListSelectionListener tableSelectionListener = this::manageTableSelection;
 
 	public ArticlesPanel(ArticleController articleController)
 	{
@@ -152,12 +154,12 @@ public class ArticlesPanel extends JPanel
 		tableArticles.clearSelection();
 		controller.setActiveArticle(new Article());
 	}
-	
+
 	private void setUpListeners()
 	{
 		setUpActionListeners();
 		setUpSelectionListeners();
-		
+
 	}
 
 	private void setUpActionListeners()
@@ -165,41 +167,56 @@ public class ArticlesPanel extends JPanel
 		btnNew.addActionListener(e -> clearForm());
 		btnSave.addActionListener(e -> saveArticle());
 	}
-	
+
 	private void saveArticle()
 	{
-		if (articleIsNew())
-			verifyFormAndInsert();			
-		else
-		{
-			System.out.println("Update");
-		}
+		verifyFormAndInsert();
 	}
 
-	private boolean articleIsNew()
-	{
-		return tfId.getText().equals(valueOf("0"));
-	}
-	
 	private void verifyFormAndInsert()
 	{
 		if (descpriptionIsEmpty())
 			showDescriptionEmptyError();
 		else
-			createArticle();
+			persistArticle();
 	}
 
 	private boolean descpriptionIsEmpty()
 	{
 		return tfDescription.getText().isEmpty();
 	}
-	
-	private void createArticle()
+
+	private void persistArticle()
 	{
 		setActiveArticleFromForm();
-		controller.insertActiveArticle();
+		insertOrUpdate();
 		fillTableAndClearForm();
 		showArticleSavedMessage();
+	}
+
+	private void insertOrUpdate()
+	{
+		if (articleIsNew())
+			insertNewArticle();
+		else
+			editArticle();
+	}
+
+	private void insertNewArticle()
+	{
+		controller.insertActiveArticle();
+		verb = "guardado";
+	}
+	
+	private void editArticle()
+	{
+		controller.updateActiveArticle();
+		verb = "actualizado";
+	}
+	
+	private boolean articleIsNew()
+	{
+		return tfId.getText().equals(valueOf("0"));
 	}
 
 	private void setActiveArticleFromForm()
@@ -220,28 +237,26 @@ public class ArticlesPanel extends JPanel
 
 	private void showArticleSavedMessage()
 	{
-		JOptionPane.showMessageDialog(getParent(),
-			    "El artíuclo ha sido guardado con éxito.");
+		String message = format("El artíuclo ha sido %s con éxito.", verb);
+		JOptionPane.showMessageDialog(getParent(), message);
 	}
-	
+
 	private void showDescriptionEmptyError()
 	{
-		JOptionPane.showMessageDialog(getParent(),
-				"Por favor, rellene la descripción del artículo",
-				"Error en los datos",
-				JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(getParent(), "Por favor, rellene la descripción del artículo",
+				"Error en los datos", JOptionPane.ERROR_MESSAGE);
 	}
-	
+
 	private void setUpSelectionListeners()
 	{
 		ListSelectionModel selectionModel = tableArticles.getSelectionModel();
 		selectionModel.addListSelectionListener(tableSelectionListener);
 	}
-	
+
 	private void manageTableSelection(ListSelectionEvent e)
 	{
-		if(e.getValueIsAdjusting())
-			selectNewArticle();	
+		if (e.getValueIsAdjusting())
+			selectNewArticle();
 	}
 
 	private void selectNewArticle()
@@ -262,7 +277,7 @@ public class ArticlesPanel extends JPanel
 	{
 		controller.setActiveArticle(article);
 	}
-	
+
 	private void fillForm()
 	{
 		Article newArticle = controller.getActiveArticle();

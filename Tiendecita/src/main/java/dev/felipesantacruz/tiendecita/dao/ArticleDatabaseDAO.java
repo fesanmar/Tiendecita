@@ -40,9 +40,15 @@ public class ArticleDatabaseDAO implements ArticleDAO
 	@Override
 	public void insert(Article article)
 	{
+		execute(s -> s.save(article));
+	}
+
+
+	private void execute(CRUDOperation operation)
+	{
 		Session session = sessionFactory.openSession();
 		Transaction transaction = session.beginTransaction();
-		session.save(article);
+		operation.executeWith(session);
 		session.flush();
 		transaction.commit();
 		session.close();
@@ -51,8 +57,7 @@ public class ArticleDatabaseDAO implements ArticleDAO
 	@Override
 	public void edit(Article article)
 	{
-		// TODO Auto-generated method stub
-
+		execute(s -> s.update(article));
 	}
 
 	@Override

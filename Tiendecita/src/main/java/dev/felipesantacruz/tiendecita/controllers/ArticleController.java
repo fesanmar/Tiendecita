@@ -34,4 +34,9 @@ public class ArticleController
 	{
 		dao.insert(activeArticle);
 	}
+	
+	public void updateActiveArticle()
+	{
+		dao.edit(activeArticle);
+	}
 }
