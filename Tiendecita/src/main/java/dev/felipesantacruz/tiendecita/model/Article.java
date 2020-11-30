@@ -68,5 +68,10 @@ public class Article
 		this.stock = stock;
 	}
 	
+	@Override
+	public String toString()
+	{
+		return description;
+	}
 	
 }

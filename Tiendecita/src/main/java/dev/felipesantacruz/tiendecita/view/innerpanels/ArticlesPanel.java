@@ -1,60 +1,59 @@
 package dev.felipesantacruz.tiendecita.view.innerpanels;
 
 import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
 import javax.swing.JSpinner;
-import javax.swing.JFormattedTextField;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
+import dev.felipesantacruz.tiendecita.controllers.ArticleController;
+import dev.felipesantacruz.tiendecita.model.Article;
+import dev.felipesantacruz.tiendecita.view.custom.ArticlesTable;
+import dev.felipesantacruz.tiendecita.view.custom.RefillableJTableTemplate;
 
 public class ArticlesPanel extends JPanel
 {
 	private static final long serialVersionUID = 1L;
 	private JTextField tfSearch;
-	private JTable tableArticles;
+	private RefillableJTableTemplate<Article> tableArticles;
 	private JTextField tfId;
-	private JTextField textField;
+	private JTextField tfDescription;
+	private JFormattedTextField tfPrice;
+	private ArticleController controller;
+	private JSpinner spStock;
 
-	public ArticlesPanel()
+	public ArticlesPanel(ArticleController articleController)
 	{
+		controller = articleController;
 		setLayout(null);
+		setUpComponents();
 
-		tfSearch = new JTextField();
-		tfSearch.setBounds(10, 12, 178, 20);
-		add(tfSearch);
-		tfSearch.setColumns(10);
+	}
 
-		JButton btnSearch = new JButton("Buscar");
-		btnSearch.setBounds(209, 11, 89, 23);
-		add(btnSearch);
+	private void setUpComponents()
+	{
+		setUpLabels();
+		setUpTextFields();
+		setUpButtons();
+		setUpSpinners();
+		setUpTable();
+		setUpListeners();
+	}
 
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 45, 288, 233);
-		add(scrollPane);
-
-		tableArticles = new JTable(new String[][] {}, new String[] { "Artículo", "Precio", "Stock" });
-		scrollPane.setViewportView(tableArticles);
-
+	private void setUpLabels()
+	{
 		JLabel lblId = new JLabel("Id");
 		lblId.setBounds(334, 48, 46, 14);
 		add(lblId);
 
-		tfId = new JTextField();
-		tfId.setEditable(false);
-		tfId.setBounds(390, 45, 62, 20);
-		add(tfId);
-		tfId.setColumns(10);
-
 		JLabel lblArticle = new JLabel("Art\u00EDculo");
 		lblArticle.setBounds(334, 99, 46, 14);
 		add(lblArticle);
-
-		textField = new JTextField();
-		textField.setBounds(390, 96, 155, 20);
-		add(textField);
-		textField.setColumns(10);
 
 		JLabel lblPrecio = new JLabel("Precio");
 		lblPrecio.setBounds(334, 148, 46, 14);
@@ -63,6 +62,37 @@ public class ArticlesPanel extends JPanel
 		JLabel lblStock = new JLabel("Stock");
 		lblStock.setBounds(334, 200, 46, 14);
 		add(lblStock);
+	}
+
+	private void setUpTextFields()
+	{
+		tfSearch = new JTextField();
+		tfSearch.setBounds(10, 12, 178, 20);
+		add(tfSearch);
+		tfSearch.setColumns(10);
+
+		tfId = new JTextField();
+		tfId.setEditable(false);
+		tfId.setBounds(390, 45, 62, 20);
+		add(tfId);
+		tfId.setColumns(10);
+		tfId.setText(String.valueOf(0));
+
+		tfDescription = new JTextField();
+		tfDescription.setBounds(390, 96, 155, 20);
+		add(tfDescription);
+		tfDescription.setColumns(10);
+
+		tfPrice = new JFormattedTextField();
+		tfPrice.setBounds(390, 145, 155, 20);
+		add(tfPrice);
+	}
+
+	private void setUpButtons()
+	{
+		JButton btnSearch = new JButton("Buscar");
+		btnSearch.setBounds(209, 11, 89, 23);
+		add(btnSearch);
 
 		JButton btnSave = new JButton("Guardar");
 		btnSave.setBounds(390, 255, 71, 23);
@@ -72,17 +102,59 @@ public class ArticlesPanel extends JPanel
 		btnEliminar.setBounds(474, 255, 71, 23);
 		add(btnEliminar);
 
-		JSpinner spinner = new JSpinner();
-		spinner.setBounds(390, 197, 71, 20);
-		add(spinner);
-
-		JFormattedTextField tfPrice = new JFormattedTextField();
-		tfPrice.setBounds(390, 145, 155, 20);
-		add(tfPrice);
-
 		JButton btnNew = new JButton("Nuevo");
 		btnNew.setBounds(474, 44, 71, 23);
 		add(btnNew);
+	}
 
+	private void setUpSpinners()
+	{
+		spStock = new JSpinner();
+		spStock.setBounds(390, 197, 71, 20);
+		add(spStock);
+	}
+
+	private void setUpTable()
+	{
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(10, 45, 288, 233);
+		add(scrollPane);
+		tableArticles = new ArticlesTable();
+		tableArticles.refill(controller.fetchAll());
+		scrollPane.setViewportView(tableArticles);
+	}
+
+	private void setUpListeners()
+	{
+		ListSelectionModel selectionModel = tableArticles.getSelectionModel();
+		selectionModel.addListSelectionListener(e -> selectNewArticle());
+	}
+
+	private void selectNewArticle()
+	{
+		Article article = (Article) tableArticles.getValueAt(tableArticles.getSelectedRow(), 0);
+		if (hasChanged(article))
+			setNewArticle(article);
+		fillForm();
+
+	}
+
+	private boolean hasChanged(Article article)
+	{
+		return controller.getActiveArticle() != article;
+	}
+
+	private void setNewArticle(Article article)
+	{
+		controller.setActiveArticle(article);
+	}
+	
+	private void fillForm()
+	{
+		Article newArticle = controller.getActiveArticle();
+		tfId.setText(String.valueOf(newArticle.getId()));
+		tfDescription.setText(newArticle.getDescription());
+		tfPrice.setValue(newArticle.getPrice());
+		spStock.setValue(newArticle.getStock());
 	}
 }

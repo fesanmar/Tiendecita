@@ -2,6 +2,8 @@ package dev.felipesantacruz.tiendecita.view;
 
 import java.awt.CardLayout;
 import java.awt.EventQueue;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -17,6 +19,9 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
+import dev.felipesantacruz.tiendecita.controllers.ArticleController;
+import dev.felipesantacruz.tiendecita.dao.ArticleDAO;
+import dev.felipesantacruz.tiendecita.dao.ArticleDatabaseDAO;
 import dev.felipesantacruz.tiendecita.model.Article;
 import dev.felipesantacruz.tiendecita.model.Ticket;
 import dev.felipesantacruz.tiendecita.model.TicketLine;
@@ -24,19 +29,24 @@ import dev.felipesantacruz.tiendecita.view.innerpanels.ArticlesPanel;
 import dev.felipesantacruz.tiendecita.view.innerpanels.TicketsPanel;
 
 
-public class HomeView extends JFrame
+public class HomeView extends JFrame implements WindowListener
 {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private ArticlesPanel articlesPanel;
 	private TicketsPanel ticketsPanel;
+	private static SessionFactory sessionFactory;
+	private static ArticleDAO articleDAO;
+	private static ArticleController articleController;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args)
 	{
-//		SessionFactory sessionFactory = new Configuration().addAnnotatedClass(Article.class).configure().buildSessionFactory();
+		sessionFactory = new Configuration().addAnnotatedClass(Article.class).configure().buildSessionFactory();
+		articleDAO = new ArticleDatabaseDAO(sessionFactory);
+		articleController = new ArticleController(articleDAO);
 //		Session session = sessionFactory.openSession();
 //		Transaction tx = session.beginTransaction();
 //		
@@ -109,7 +119,7 @@ public class HomeView extends JFrame
 		setContentPane(contentPane);
 		contentPane.setLayout(new CardLayout(0, 0));
 		
-		articlesPanel = new ArticlesPanel();
+		articlesPanel = new ArticlesPanel(articleController);
 		articlesPanel.setName("ArticlesPanel");
 		contentPane.add(articlesPanel, articlesPanel.getName());
 		ticketsPanel = new TicketsPanel();
@@ -129,5 +139,30 @@ public class HomeView extends JFrame
 	{
 		((CardLayout) contentPane.getLayout()).show(contentPane, cardName);
 	}
+
+	@Override
+	public void windowOpened(WindowEvent e) { }
+
+	@Override
+	public void windowClosing(WindowEvent e) { }
+
+	@Override
+	public void windowClosed(WindowEvent e)
+	{
+		sessionFactory.close();
+		System.exit(0);
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) { }
+
+	@Override
+	public void windowDeiconified(WindowEvent e) { }
+
+	@Override
+	public void windowActivated(WindowEvent e) { }
+
+	@Override
+	public void windowDeactivated(WindowEvent e) { }
 
 }
