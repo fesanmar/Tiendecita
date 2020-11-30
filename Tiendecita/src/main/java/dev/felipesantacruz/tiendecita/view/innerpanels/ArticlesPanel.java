@@ -1,18 +1,26 @@
 package dev.felipesantacruz.tiendecita.view.innerpanels;
 
+import static java.lang.String.valueOf;
+
+import java.math.BigDecimal;
+
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.text.NumberFormatter;
 
 import dev.felipesantacruz.tiendecita.controllers.ArticleController;
 import dev.felipesantacruz.tiendecita.model.Article;
 import dev.felipesantacruz.tiendecita.view.custom.ArticlesTable;
+import dev.felipesantacruz.tiendecita.view.custom.NumberTextField;
 import dev.felipesantacruz.tiendecita.view.custom.RefillableJTableTemplate;
 
 public class ArticlesPanel extends JPanel
@@ -26,6 +34,9 @@ public class ArticlesPanel extends JPanel
 	private ArticleController controller;
 	private JSpinner spStock;
 	private JButton btnNew;
+	private JButton btnSave;
+	
+	private ListSelectionListener tableSelectionListener = this::manageTableSelection; 
 
 	public ArticlesPanel(ArticleController articleController)
 	{
@@ -83,7 +94,7 @@ public class ArticlesPanel extends JPanel
 		add(tfDescription);
 		tfDescription.setColumns(10);
 
-		tfPrice = new JFormattedTextField();
+		tfPrice = new NumberTextField();
 		tfPrice.setBounds(390, 145, 155, 20);
 		add(tfPrice);
 	}
@@ -94,7 +105,7 @@ public class ArticlesPanel extends JPanel
 		btnSearch.setBounds(209, 11, 89, 23);
 		add(btnSearch);
 
-		JButton btnSave = new JButton("Guardar");
+		btnSave = new JButton("Guardar");
 		btnSave.setBounds(390, 255, 71, 23);
 		add(btnSave);
 
@@ -111,7 +122,15 @@ public class ArticlesPanel extends JPanel
 	{
 		spStock = new JSpinner();
 		spStock.setBounds(390, 197, 71, 20);
+		setStockSpinnerNumberOnlyFormat();
 		add(spStock);
+	}
+
+	private void setStockSpinnerNumberOnlyFormat()
+	{
+		JFormattedTextField txt = ((JSpinner.NumberEditor) spStock.getEditor()).getTextField();
+		NumberFormatter formatter = (NumberFormatter) txt.getFormatter();
+		formatter.setAllowsInvalid(false);
 	}
 
 	private void setUpTable()
@@ -124,6 +143,16 @@ public class ArticlesPanel extends JPanel
 		scrollPane.setViewportView(tableArticles);
 	}
 
+	private void clearForm()
+	{
+		tfId.setText(valueOf(0));
+		tfDescription.setText("");
+		tfPrice.setValue(0.00);
+		spStock.setValue(0);
+		tableArticles.clearSelection();
+		controller.setActiveArticle(new Article());
+	}
+	
 	private void setUpListeners()
 	{
 		setUpActionListeners();
@@ -134,22 +163,79 @@ public class ArticlesPanel extends JPanel
 	private void setUpActionListeners()
 	{
 		btnNew.addActionListener(e -> clearForm());
+		btnSave.addActionListener(e -> saveArticle());
 	}
 	
-	private void clearForm()
+	private void saveArticle()
 	{
-		tfId.setText(String.valueOf(0));
-		tfDescription.setText("");
-		tfPrice.setValue(0.00);
-		spStock.setValue(0);
-		tableArticles.clearSelection();
-		controller.setActiveArticle(new Article());
+		if (articleIsNew())
+			verifyFormAndInsert();			
+		else
+		{
+			System.out.println("Update");
+		}
 	}
 
+	private boolean articleIsNew()
+	{
+		return tfId.getText().equals(valueOf("0"));
+	}
+	
+	private void verifyFormAndInsert()
+	{
+		if (descpriptionIsEmpty())
+			showDescriptionEmptyError();
+		else
+			createArticle();
+	}
+
+	private boolean descpriptionIsEmpty()
+	{
+		return tfDescription.getText().isEmpty();
+	}
+	
+	private void createArticle()
+	{
+		setActiveArticleFromForm();
+		controller.insertActiveArticle();
+		fillTableAndClearForm();
+		showArticleSavedMessage();
+	}
+
+	private void setActiveArticleFromForm()
+	{
+		Article article = controller.getActiveArticle();
+		article.setDescription(tfDescription.getText());
+		article.setPrice((BigDecimal) tfPrice.getValue());
+		article.setStock((int) spStock.getValue());
+	}
+
+	private void fillTableAndClearForm()
+	{
+		tableArticles.getSelectionModel().removeListSelectionListener(tableSelectionListener);
+		tableArticles.refill(controller.fetchAll());
+		tableArticles.getSelectionModel().addListSelectionListener(tableSelectionListener);
+		clearForm();
+	}
+
+	private void showArticleSavedMessage()
+	{
+		JOptionPane.showMessageDialog(getParent(),
+			    "El artíuclo ha sido guardado con éxito.");
+	}
+	
+	private void showDescriptionEmptyError()
+	{
+		JOptionPane.showMessageDialog(getParent(),
+				"Por favor, rellene la descripción del artículo",
+				"Error en los datos",
+				JOptionPane.ERROR_MESSAGE);
+	}
+	
 	private void setUpSelectionListeners()
 	{
 		ListSelectionModel selectionModel = tableArticles.getSelectionModel();
-		selectionModel.addListSelectionListener(this::manageTableSelection);
+		selectionModel.addListSelectionListener(tableSelectionListener);
 	}
 	
 	private void manageTableSelection(ListSelectionEvent e)
@@ -180,7 +266,7 @@ public class ArticlesPanel extends JPanel
 	private void fillForm()
 	{
 		Article newArticle = controller.getActiveArticle();
-		tfId.setText(String.valueOf(newArticle.getId()));
+		tfId.setText(valueOf(newArticle.getId()));
 		tfDescription.setText(newArticle.getDescription());
 		tfPrice.setValue(newArticle.getPrice());
 		spStock.setValue(newArticle.getStock());

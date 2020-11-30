@@ -29,4 +29,9 @@ public class ArticleController
 	{
 		return dao.findAll().iterator();
 	}
+	
+	public void insertActiveArticle()
+	{
+		dao.insert(activeArticle);
+	}
 }

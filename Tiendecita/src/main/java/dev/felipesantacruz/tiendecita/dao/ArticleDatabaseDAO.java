@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 import dev.felipesantacruz.tiendecita.model.Article;
 
@@ -39,8 +40,12 @@ public class ArticleDatabaseDAO implements ArticleDAO
 	@Override
 	public void insert(Article article)
 	{
-		// TODO Auto-generated method stub
-
+		Session session = sessionFactory.openSession();
+		Transaction transaction = session.beginTransaction();
+		session.save(article);
+		session.flush();
+		transaction.commit();
+		session.close();
 	}
 
 	@Override
