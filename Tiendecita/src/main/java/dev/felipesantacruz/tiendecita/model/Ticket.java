@@ -2,6 +2,7 @@ package dev.felipesantacruz.tiendecita.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,5 +73,12 @@ public class Ticket
 	{
 		lines.remove(line);
 		line.setTicket(null);
+	}
+	
+	@Override
+	public String toString()
+	{
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+		return dateTicket.format(formatter).toString();
 	}
 }
