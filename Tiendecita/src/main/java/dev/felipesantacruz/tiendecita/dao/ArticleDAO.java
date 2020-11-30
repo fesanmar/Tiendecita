@@ -6,7 +6,7 @@ import dev.felipesantacruz.tiendecita.model.Article;
 
 public interface ArticleDAO
 {
-	Article findById(int id);
+	Collection<Article> findByDescription(String description);
 	
 	Collection<Article> findAll();
 	

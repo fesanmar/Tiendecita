@@ -37,6 +37,7 @@ public class ArticlesPanel extends JPanel
 	private JButton btnNew;
 	private JButton btnSave;
 	private JButton btnDelete;
+	private JButton btnSearch;
 	private String verb;
 
 	private ListSelectionListener tableSelectionListener = this::manageTableSelection;
@@ -104,7 +105,7 @@ public class ArticlesPanel extends JPanel
 
 	private void setUpButtons()
 	{
-		JButton btnSearch = new JButton("Buscar");
+		btnSearch = new JButton("Buscar");
 		btnSearch.setBounds(209, 11, 89, 23);
 		add(btnSearch);
 
@@ -168,6 +169,9 @@ public class ArticlesPanel extends JPanel
 		btnNew.addActionListener(e -> clearForm());
 		btnSave.addActionListener(e -> saveArticle());
 		btnDelete.addActionListener(e -> delteArticle());
+		btnSearch.addActionListener(w -> {
+			tableArticles.refill(controller.fetchArticlesWithDescription(tfSearch.getText()));
+		});
 	}
 
 	private void saveArticle()

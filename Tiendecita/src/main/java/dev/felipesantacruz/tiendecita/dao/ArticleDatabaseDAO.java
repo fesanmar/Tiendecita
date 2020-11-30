@@ -1,6 +1,8 @@
 package dev.felipesantacruz.tiendecita.dao;
 
 import java.util.Collection;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -20,12 +22,18 @@ public class ArticleDatabaseDAO implements ArticleDAO
 	
 
 	@Override
-	public Article findById(int id)
+	public Collection<Article> findByDescription(final String description)
 	{
-		Session session = sessionFactory.openSession();
-		Article article = session.find(Article.class, id);
-		session.close();
-		return article;
+		return findAll()
+				.stream()
+				.filter(articleContainsDescriptionLike(description))
+				.collect(Collectors.toList());
+	}
+
+
+	private Predicate<? super Article> articleContainsDescriptionLike(final String description)
+	{
+		return article -> article.getDescription().toLowerCase().contains(description.toLowerCase());
 	}
 
 	@Override

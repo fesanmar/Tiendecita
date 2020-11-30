@@ -15,6 +15,11 @@ public class ArticleController
 		this.dao = dao;
 	}
 	
+	public Iterator<Article> fetchArticlesWithDescription(String description)
+	{
+		return dao.findByDescription(description).iterator();
+	}
+	
 	public void setActiveArticle(Article a)
 	{
 		activeArticle = a;
