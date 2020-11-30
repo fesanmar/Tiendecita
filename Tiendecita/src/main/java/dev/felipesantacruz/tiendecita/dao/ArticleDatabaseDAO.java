@@ -63,8 +63,7 @@ public class ArticleDatabaseDAO implements ArticleDAO
 	@Override
 	public void delete(Article article)
 	{
-		// TODO Auto-generated method stub
-
+		execute(s -> s.delete(article));
 	}
 
 }

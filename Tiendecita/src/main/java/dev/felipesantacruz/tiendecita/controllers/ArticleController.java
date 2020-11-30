@@ -39,4 +39,9 @@ public class ArticleController
 	{
 		dao.edit(activeArticle);
 	}
+	
+	public void deleteActiveArticle()
+	{
+		dao.delete(activeArticle);
+	}
 }

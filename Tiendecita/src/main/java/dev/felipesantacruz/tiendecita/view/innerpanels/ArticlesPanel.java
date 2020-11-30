@@ -36,6 +36,7 @@ public class ArticlesPanel extends JPanel
 	private JSpinner spStock;
 	private JButton btnNew;
 	private JButton btnSave;
+	private JButton btnDelete;
 	private String verb;
 
 	private ListSelectionListener tableSelectionListener = this::manageTableSelection;
@@ -111,9 +112,9 @@ public class ArticlesPanel extends JPanel
 		btnSave.setBounds(390, 255, 71, 23);
 		add(btnSave);
 
-		JButton btnEliminar = new JButton("Eliminar");
-		btnEliminar.setBounds(474, 255, 71, 23);
-		add(btnEliminar);
+		btnDelete = new JButton("Eliminar");
+		btnDelete.setBounds(474, 255, 71, 23);
+		add(btnDelete);
 
 		btnNew = new JButton("Nuevo");
 		btnNew.setBounds(474, 44, 71, 23);
@@ -166,6 +167,7 @@ public class ArticlesPanel extends JPanel
 	{
 		btnNew.addActionListener(e -> clearForm());
 		btnSave.addActionListener(e -> saveArticle());
+		btnDelete.addActionListener(e -> delteArticle());
 	}
 
 	private void saveArticle()
@@ -190,8 +192,13 @@ public class ArticlesPanel extends JPanel
 	{
 		setActiveArticleFromForm();
 		insertOrUpdate();
+		displayExitActions();
+	}
+
+	private void displayExitActions()
+	{
 		fillTableAndClearForm();
-		showArticleSavedMessage();
+		showSuccessMessage();
 	}
 
 	private void insertOrUpdate()
@@ -235,7 +242,7 @@ public class ArticlesPanel extends JPanel
 		clearForm();
 	}
 
-	private void showArticleSavedMessage()
+	private void showSuccessMessage()
 	{
 		String message = format("El artíuclo ha sido %s con éxito.", verb);
 		JOptionPane.showMessageDialog(getParent(), message);
@@ -245,6 +252,19 @@ public class ArticlesPanel extends JPanel
 	{
 		JOptionPane.showMessageDialog(getParent(), "Por favor, rellene la descripción del artículo",
 				"Error en los datos", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	private void delteArticle()
+	{
+		if (!articleIsNew())
+			deleteArticleAndShowSuccessMessage();
+	}
+
+	private void deleteArticleAndShowSuccessMessage()
+	{
+		controller.deleteActiveArticle();
+		verb = "eliminado";
+		displayExitActions();
 	}
 
 	private void setUpSelectionListeners()
