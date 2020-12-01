@@ -1,6 +1,8 @@
 package dev.felipesantacruz.tiendecita.dao;
 
+import java.time.LocalDate;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -28,6 +30,18 @@ public class TicketDatabaseDAO extends HibernateWirter implements TicketDAO
 	public void insert(Ticket ticket)
 	{
 		execute(s -> s.save(ticket));
+	}
+	
+	@Override
+	public Collection<Ticket> findByDate(LocalDate date)
+	{
+		
+		return findAll()
+				.stream()
+				.filter(ticket -> ticket.getDateTicket().getDayOfMonth() == date.getDayOfMonth())
+				.filter(ticket -> ticket.getDateTicket().getMonthValue() == date.getMonthValue())
+				.filter(ticket -> ticket.getDateTicket().getYear() == date.getYear())
+				.collect(Collectors.toList());
 	}
 
 }

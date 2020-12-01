@@ -1,5 +1,6 @@
 package dev.felipesantacruz.tiendecita.controllers;
 
+import java.time.LocalDate;
 import java.util.Iterator;
 
 import dev.felipesantacruz.tiendecita.dao.TicketDAO;
@@ -22,7 +23,11 @@ public class TicketController implements Controller<Ticket>
 	{
 		return dao.findAll().iterator();
 	}
-
+	
+	public Iterator<Ticket> fetchByDate(LocalDate d)
+	{
+		return dao.findByDate(d).iterator();
+	}
 
 	@Override
 	public void setActiveItem(Ticket t)

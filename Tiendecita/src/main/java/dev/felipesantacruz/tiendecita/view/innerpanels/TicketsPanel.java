@@ -1,8 +1,12 @@
 package dev.felipesantacruz.tiendecita.view.innerpanels;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Collection;
+import java.util.Iterator;
 
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -85,6 +89,7 @@ public class TicketsPanel extends SearchTableForm<Ticket> implements DialogAccep
 	{
 		tfSearchDate = new JFormattedTextField();
 		tfSearchDate.setBounds(10, 12, 133, 20);
+		tfSearchDate.setToolTipText("Introduce una fecha con el formato dd/mm/yyy");
 		add(tfSearchDate);
 
 		tfDate = new JTextField();
@@ -113,7 +118,7 @@ public class TicketsPanel extends SearchTableForm<Ticket> implements DialogAccep
 		btnRemove.setBounds(517, 134, 47, 83);
 		add(btnRemove);
 
-		btnSave = new JButton("Guardar nuevo ticket");
+		btnSave = new JButton("Guardar");
 		btnSave.setBounds(299, 271, 133, 23);
 		add(btnSave);
 
@@ -147,7 +152,8 @@ public class TicketsPanel extends SearchTableForm<Ticket> implements DialogAccep
 		btnAdd.addActionListener(e -> openAddNewLineDialog());
 		btnNew.addActionListener(e -> setFormInInsertMode());
 		btnSave.addActionListener(e -> createNewTicket());
-		btnRemove.addActionListener(e -> removeTicketLine());
+		btnRemove.addActionListener(e -> removeTicketLineIfSelected());
+		btnSearch.addActionListener(e -> searchByDate());
 		
 	}
 	
@@ -179,17 +185,58 @@ public class TicketsPanel extends SearchTableForm<Ticket> implements DialogAccep
 		ticket.setAmount((BigDecimal) tfTotal.getValue());
 		ticketsController.insertActiveItem();
 		showSuccessMessage();
-		tableTickets.getSelectionModel().removeListSelectionListener(getTableSelectionListener());
-		tableTickets.refill(ticketsController.fetchAll());
-		tableTickets.getSelectionModel().addListSelectionListener(getTableSelectionListener());
+		refillTicketsTable(ticketsController.fetchAll());
 		setFormInReadMode();
 	}
+
+	private void refillTicketsTable(Iterator<Ticket> data)
+	{
+		tableTickets.getSelectionModel().removeListSelectionListener(getTableSelectionListener());
+		tableTickets.refill(data);
+		tableTickets.getSelectionModel().addListSelectionListener(getTableSelectionListener());
+	}
 	
-	private void removeTicketLine()
+	private void removeTicketLineIfSelected()
+	{
+		int selectedRow = tableLines.getSelectedRow();
+		if (anyTicketLineRowIsSelected(selectedRow)) 
+			removeTicketLine(selectedRow);			
+	}
+
+	private boolean anyTicketLineRowIsSelected(int selectedRow)
+	{
+		return selectedRow != -1;
+	}
+	
+	private void removeTicketLine(int selectedRow)
 	{
 		Ticket ticket = ticketsController.getActiveItem();
-		ticket.removeLine((TicketLine) tableLines.getModel().getValueAt(tableLines.getSelectedRow(), 0));
+		ticket.removeLine((TicketLine) tableLines.getModel().getValueAt(selectedRow, 0));
 		update();
+	}
+	
+	private void searchByDate()
+	{
+		String possibleDate = tfSearchDate.getText();
+		if (possibleDate.trim().isEmpty())
+			refillTicketsTable(ticketsController.fetchAll());
+		else
+		{
+			refillTicketTableWithTicketsOf(possibleDate);
+		}
+	}
+
+	private void refillTicketTableWithTicketsOf(String possibleDate)
+	{
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		try
+		{
+			LocalDate date = LocalDate.parse(possibleDate, formatter);
+			refillTicketsTable(ticketsController.fetchByDate(date));									
+		} catch (DateTimeParseException dtpe)
+		{
+			showDateEnteredError();
+		}
 	}
 	
 	private void setFormInReadMode()
@@ -252,6 +299,12 @@ public class TicketsPanel extends SearchTableForm<Ticket> implements DialogAccep
 	private void showLinesEmptyError()
 	{
 		JOptionPane.showMessageDialog(getParent(), "Por favor, introduzca alguna línea en el ticket.",
+				"Error en los datos", JOptionPane.ERROR_MESSAGE);
+	}
+	
+	private void showDateEnteredError()
+	{
+		JOptionPane.showMessageDialog(getParent(), "Por favor, introduzca una fecha válida con el formato dd/mm/yyyy.",
 				"Error en los datos", JOptionPane.ERROR_MESSAGE);
 	}
 
