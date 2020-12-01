@@ -147,6 +147,7 @@ public class TicketsPanel extends SearchTableForm<Ticket> implements DialogAccep
 		btnAdd.addActionListener(e -> openAddNewLineDialog());
 		btnNew.addActionListener(e -> setFormInInsertMode());
 		btnSave.addActionListener(e -> createNewTicket());
+		btnRemove.addActionListener(e -> removeTicketLine());
 		
 	}
 	
@@ -182,6 +183,13 @@ public class TicketsPanel extends SearchTableForm<Ticket> implements DialogAccep
 		tableTickets.refill(ticketsController.fetchAll());
 		tableTickets.getSelectionModel().addListSelectionListener(getTableSelectionListener());
 		setFormInReadMode();
+	}
+	
+	private void removeTicketLine()
+	{
+		Ticket ticket = ticketsController.getActiveItem();
+		ticket.removeLine((TicketLine) tableLines.getModel().getValueAt(tableLines.getSelectedRow(), 0));
+		update();
 	}
 	
 	private void setFormInReadMode()
@@ -255,7 +263,7 @@ public class TicketsPanel extends SearchTableForm<Ticket> implements DialogAccep
 				.stream()
 				.map(ticketLine -> ticketLine.getPriceInTicket().multiply(BigDecimal.valueOf(ticketLine.getQuantity())))
 				.reduce((total, next) -> total.add(next))
-				.get();
+				.orElse(BigDecimal.ZERO);
 		tfTotal.setValue(totalAmount);
 		tableLines.refill(ticketLines.iterator());
 	}

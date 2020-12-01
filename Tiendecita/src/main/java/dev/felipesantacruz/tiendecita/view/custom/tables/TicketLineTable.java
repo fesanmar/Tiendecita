@@ -28,8 +28,8 @@ public class TicketLineTable extends RefillableJTableTemplate<TicketLine>
 	@Override
 	protected void setWidthForColumnNumber(int columnIndex, TableColumn column)
 	{
-		// TODO Auto-generated method stub
-
+		if (columnIndex == 0)
+			removeColumn(column);
 	}
 
 }

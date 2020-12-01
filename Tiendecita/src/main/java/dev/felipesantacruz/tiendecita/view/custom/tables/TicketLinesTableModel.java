@@ -9,7 +9,7 @@ import dev.felipesantacruz.tiendecita.view.custom.NotEditableTableModelTemplate;
 public class TicketLinesTableModel extends NotEditableTableModelTemplate<TicketLine>
 {
 	private static final long serialVersionUID = 1L;
-	private static String[] colNames = { "Art.", "Cantidad", "Precio", "Total" };
+	private static String[] colNames = { "Invisible", "Art.", "Cantidad", "Precio", "Total" };
 	
 	public TicketLinesTableModel()
 	{
@@ -24,10 +24,11 @@ public class TicketLinesTableModel extends NotEditableTableModelTemplate<TicketL
 	@Override
 	protected void fillNewRow(Object[] row, TicketLine ticketLine)
 	{
-		row[0] = ticketLine.getArticle();
-		row[1] = ticketLine.getQuantity();
-		row[2] = ticketLine.getPriceInTicket();
-		row[3] = ticketLine
+		row[0] = ticketLine;
+		row[1] = ticketLine.getArticle();
+		row[2] = ticketLine.getQuantity();
+		row[3] = ticketLine.getPriceInTicket();
+		row[4] = ticketLine
 				.getPriceInTicket()
 				.multiply(BigDecimal.valueOf(ticketLine.getQuantity()));
 	}
