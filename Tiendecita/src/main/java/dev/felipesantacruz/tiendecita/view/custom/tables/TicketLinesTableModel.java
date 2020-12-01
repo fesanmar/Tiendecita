@@ -20,7 +20,7 @@ public class TicketLinesTableModel extends NotEditableTableModelTemplate<TicketL
 	{
 		super(colNames, iterator);
 	}
-
+	
 	@Override
 	protected void fillNewRow(Object[] row, TicketLine ticketLine)
 	{

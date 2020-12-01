@@ -98,7 +98,7 @@ public class HomeView extends JFrame implements WindowListener
 		articlesPanel = new ArticlesPanel(articleController);
 		articlesPanel.setName("ArticlesPanel");
 		contentPane.add(articlesPanel, articlesPanel.getName());
-		ticketsPanel = new TicketsPanel(ticketController);
+		ticketsPanel = new TicketsPanel(ticketController, articleController);
 		ticketsPanel.setName("Tickets");
 		contentPane.add(ticketsPanel, ticketsPanel.getName());
 		

@@ -6,30 +6,22 @@ import java.util.stream.Collectors;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
 
 import dev.felipesantacruz.tiendecita.model.Article;
 
-public class ArticleDatabaseDAO implements ArticleDAO
+public class ArticleDatabaseDAO extends HibernateWirter implements ArticleDAO
 {
-	
-	private SessionFactory sessionFactory;
-	
+
 	public ArticleDatabaseDAO(SessionFactory sessionFactory)
 	{
-		this.sessionFactory = sessionFactory;
+		super(sessionFactory);
 	}
-	
 
 	@Override
 	public Collection<Article> findByDescription(final String description)
 	{
-		return findAll()
-				.stream()
-				.filter(articleContainsDescriptionLike(description))
-				.collect(Collectors.toList());
+		return findAll().stream().filter(articleContainsDescriptionLike(description)).collect(Collectors.toList());
 	}
-
 
 	private Predicate<? super Article> articleContainsDescriptionLike(final String description)
 	{
@@ -39,7 +31,7 @@ public class ArticleDatabaseDAO implements ArticleDAO
 	@Override
 	public Collection<Article> findAll()
 	{
-		Session session = sessionFactory.openSession();
+		Session session = getSessionFactory().openSession();
 		Collection<Article> articles = session.createQuery("SELECT a FROM Article a", Article.class).getResultList();
 		session.close();
 		return articles;
@@ -49,17 +41,6 @@ public class ArticleDatabaseDAO implements ArticleDAO
 	public void insert(Article article)
 	{
 		execute(s -> s.save(article));
-	}
-
-
-	private void execute(CRUDOperation operation)
-	{
-		Session session = sessionFactory.openSession();
-		Transaction transaction = session.beginTransaction();
-		operation.executeWith(session);
-		session.flush();
-		transaction.commit();
-		session.close();
 	}
 
 	@Override

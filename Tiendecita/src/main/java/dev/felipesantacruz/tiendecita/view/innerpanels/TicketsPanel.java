@@ -1,13 +1,19 @@
 package dev.felipesantacruz.tiendecita.view.innerpanels;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Collection;
+
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
+import dev.felipesantacruz.tiendecita.controllers.ArticleController;
 import dev.felipesantacruz.tiendecita.controllers.Controller;
 import dev.felipesantacruz.tiendecita.controllers.TicketController;
 import dev.felipesantacruz.tiendecita.model.Ticket;
@@ -18,7 +24,7 @@ import dev.felipesantacruz.tiendecita.view.custom.SearchTableForm;
 import dev.felipesantacruz.tiendecita.view.custom.tables.TicketLineTable;
 import dev.felipesantacruz.tiendecita.view.custom.tables.TicketTable;
 
-public class TicketsPanel extends SearchTableForm<Ticket>
+public class TicketsPanel extends SearchTableForm<Ticket> implements DialogAcceptedObserver
 {
 
 	private static final long serialVersionUID = 1L;
@@ -37,16 +43,19 @@ public class TicketsPanel extends SearchTableForm<Ticket>
 	private JButton btnAdd;
 	private JButton btnRemove;
 	private JButton btnSave;
-	private JButton btnLimpiarFormulario;
+	private JButton btnNew;
 	
-	private TicketController controller;
+	private TicketController ticketsController;
+	private ArticleController articleController;
 	
-	public TicketsPanel(TicketController controller)
+	public TicketsPanel(TicketController controller, ArticleController articleController)
 	{
-		this.controller = controller;
+		this.ticketsController = controller;
+		this.articleController = articleController;
 		setLayout(null);
 		setUpComponents();
 		setUpListeners();
+		disableAll();
 	}
 
 	private void setUpComponents()
@@ -80,6 +89,7 @@ public class TicketsPanel extends SearchTableForm<Ticket>
 
 		tfDate = new JTextField();
 		tfDate.setBounds(299, 12, 265, 20);
+		tfDate.setEditable(false);
 		add(tfDate);
 
 		tfTotal = new NumberTextField();
@@ -107,9 +117,9 @@ public class TicketsPanel extends SearchTableForm<Ticket>
 		btnSave.setBounds(299, 271, 133, 23);
 		add(btnSave);
 
-		btnLimpiarFormulario = new JButton("Limpiar formulario");
-		btnLimpiarFormulario.setBounds(442, 271, 122, 23);
-		add(btnLimpiarFormulario);
+		btnNew = new JButton("Nuevo");
+		btnNew.setBounds(442, 271, 122, 23);
+		add(btnNew);
 	}
 
 	private void setUpTables()
@@ -120,7 +130,7 @@ public class TicketsPanel extends SearchTableForm<Ticket>
 
 		tableTickets = new TicketTable();
 		scrollPane.setViewportView(tableTickets);
-		tableTickets.refill(controller.fetchAll());
+		tableTickets.refill(ticketsController.fetchAll());
 
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(299, 49, 219, 168);
@@ -134,15 +144,60 @@ public class TicketsPanel extends SearchTableForm<Ticket>
 	{
 		ListSelectionModel selectionModel = tableTickets.getSelectionModel();
 		selectionModel.addListSelectionListener(getTableSelectionListener());
+		btnAdd.addActionListener(e -> openAddNewLineDialog());
+		btnNew.addActionListener(e -> setFormInInsertMode());
+		btnSave.addActionListener(e -> createNewTicket());
+		
+	}
+	
+	private void openAddNewLineDialog()
+	{
+		TicketLineDialog lineDialog = new TicketLineDialog(ticketsController, articleController.fetchAll());
+		lineDialog.setDialogAcceptedObserver(this);
+		lineDialog.setVisible(true);
+	}
+	
+	private void setFormInInsertMode()
+	{
+		clearForm();
+		enableAll();
+	}
+	
+	private void createNewTicket()
+	{
+		Ticket ticket = ticketsController.getActiveItem();
+		if (ticket.getTicketLines().isEmpty())
+			showLinesEmptyError();
+		else 
+			insertNewTicket(ticket);				
+	}
+
+	private void insertNewTicket(Ticket ticket)
+	{
+		ticket.setDateTicket(LocalDateTime.now());
+		ticket.setAmount((BigDecimal) tfTotal.getValue());
+		ticketsController.insertActiveItem();
+		showSuccessMessage();
+		tableTickets.getSelectionModel().removeListSelectionListener(getTableSelectionListener());
+		tableTickets.refill(ticketsController.fetchAll());
+		tableTickets.getSelectionModel().addListSelectionListener(getTableSelectionListener());
+		setFormInReadMode();
+	}
+	
+	private void setFormInReadMode()
+	{
+		clearForm();
+		disableAll();
 	}
 	
 	@Override
 	protected void fillForm()
 	{
-		Ticket ticket = controller.getActiveItem();
+		Ticket ticket = ticketsController.getActiveItem();
 		tfDate.setText(ticket.toString());
 		tfTotal.setValue(ticket.getAmount());
 		tableLines.refill(ticket.getTicketLines().iterator());
+		disableAll();
 	}
 
 	@Override
@@ -154,7 +209,55 @@ public class TicketsPanel extends SearchTableForm<Ticket>
 	@Override
 	protected Controller<Ticket> getController()
 	{
-		return controller;
+		return ticketsController;
+	}
+	
+	private void disableAll()
+	{
+		btnAdd.setEnabled(false);
+		btnRemove.setEnabled(false);
+		btnSave.setEnabled(false);
+	}
+	
+	private void clearForm()
+	{
+		Ticket ticket = new Ticket();
+		ticketsController.setActiveItem(ticket);
+		tfDate.setText("");
+		tfTotal.setValue(null);
+		tableLines.refill(ticket.getTicketLines().iterator());
+		tableTickets.clearSelection();
+	}
+	
+	private void enableAll()
+	{
+		btnAdd.setEnabled(true);
+		btnRemove.setEnabled(true);
+		btnSave.setEnabled(true);
+	}
+	
+	private void showSuccessMessage()
+	{
+		JOptionPane.showMessageDialog(getParent(), "El ticket ha sido guardado con éxito.");
+	}
+
+	private void showLinesEmptyError()
+	{
+		JOptionPane.showMessageDialog(getParent(), "Por favor, introduzca alguna línea en el ticket.",
+				"Error en los datos", JOptionPane.ERROR_MESSAGE);
+	}
+
+	@Override
+	public void update()
+	{
+		Collection<TicketLine> ticketLines = ticketsController.getActiveItem().getTicketLines();
+		BigDecimal totalAmount = ticketLines
+				.stream()
+				.map(ticketLine -> ticketLine.getPriceInTicket().multiply(BigDecimal.valueOf(ticketLine.getQuantity())))
+				.reduce((total, next) -> total.add(next))
+				.get();
+		tfTotal.setValue(totalAmount);
+		tableLines.refill(ticketLines.iterator());
 	}
 
 }

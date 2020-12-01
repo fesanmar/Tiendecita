@@ -41,7 +41,6 @@ public class TicketController implements Controller<Ticket>
 	@Override
 	public void insertActiveItem()
 	{
-		// TODO Auto-generated method stub
-		
+		dao.insert(activeTicket);
 	}
 }

@@ -7,17 +7,18 @@ import org.hibernate.SessionFactory;
 
 import dev.felipesantacruz.tiendecita.model.Ticket;
 
-public class TicketDatabaseDAO implements TicketDAO
+public class TicketDatabaseDAO extends HibernateWirter implements TicketDAO
 {
-	private SessionFactory sessionFactory;
-	public TicketDatabaseDAO(SessionFactory factory)
+	
+	public TicketDatabaseDAO(SessionFactory sessionFactory)
 	{
-		this.sessionFactory = factory;
+		super(sessionFactory);
 	}
+
 	@Override
 	public Collection<Ticket> findAll()
 	{
-		Session session = sessionFactory.openSession();
+		Session session = getSessionFactory().openSession();
 		Collection<Ticket> tickets = session.createQuery("SELECT t FROM Ticket t", Ticket.class).getResultList();
 		session.close();
 		return tickets;
@@ -26,8 +27,7 @@ public class TicketDatabaseDAO implements TicketDAO
 	@Override
 	public void insert(Ticket ticket)
 	{
-		// TODO Auto-generated method stub
-
+		execute(s -> s.save(ticket));
 	}
 
 }
