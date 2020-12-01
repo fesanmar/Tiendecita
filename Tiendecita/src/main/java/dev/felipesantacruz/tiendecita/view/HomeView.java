@@ -10,6 +10,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
 import org.hibernate.SessionFactory;
@@ -40,8 +42,9 @@ public class HomeView extends JFrame implements WindowListener
 
 	/**
 	 * Launch the application.
+	 * @throws ClassNotFoundException 
 	 */
-	public static void main(String[] args)
+	public static void main(String[] args) throws ClassNotFoundException
 	{
 		sessionFactory = new Configuration().addAnnotatedClass(Article.class).configure().buildSessionFactory();
 		articleDAO = new ArticleDatabaseDAO(sessionFactory);
@@ -49,7 +52,7 @@ public class HomeView extends JFrame implements WindowListener
 		articleController = new ArticleController(articleDAO);
 		ticketController = new TicketController(ticketDAO);
 		
-		
+		setLookAndFeel();
 		EventQueue.invokeLater(new Runnable()
 		{
 			public void run()
@@ -64,6 +67,23 @@ public class HomeView extends JFrame implements WindowListener
 				}
 			}
 		});
+	}
+	
+	private static void setLookAndFeel() throws ClassNotFoundException
+	{
+		try
+		{
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e)
+		{
+			try
+			{
+				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+			} catch (InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e1)
+			{
+				e1.printStackTrace();
+			}
+		}
 	}
 
 	/**

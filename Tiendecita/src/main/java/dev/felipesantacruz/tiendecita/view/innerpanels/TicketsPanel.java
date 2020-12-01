@@ -73,15 +73,15 @@ public class TicketsPanel extends SearchTableForm<Ticket> implements DialogAccep
 	private void setUpLabels()
 	{
 		lblDate = new JLabel("Fecha");
-		lblDate.setBounds(254, 15, 46, 14);
+		lblDate.setBounds(264, 15, 46, 14);
 		add(lblDate);
 
 		lblLneas = new JLabel("L\u00EDneas");
-		lblLneas.setBounds(254, 49, 46, 14);
+		lblLneas.setBounds(264, 49, 46, 14);
 		add(lblLneas);
 
 		lblTotal = new JLabel("Total");
-		lblTotal.setBounds(254, 243, 46, 14);
+		lblTotal.setBounds(264, 243, 46, 14);
 		add(lblTotal);
 	}
 
@@ -93,13 +93,13 @@ public class TicketsPanel extends SearchTableForm<Ticket> implements DialogAccep
 		add(tfSearchDate);
 
 		tfDate = new JTextField();
-		tfDate.setBounds(299, 12, 265, 20);
+		tfDate.setBounds(309, 12, 265, 20);
 		tfDate.setEditable(false);
 		add(tfDate);
 
 		tfTotal = new NumberTextField();
 		tfTotal.setEditable(false);
-		tfTotal.setBounds(299, 240, 265, 20);
+		tfTotal.setBounds(309, 240, 265, 20);
 		add(tfTotal);
 		tfTotal.setColumns(10);
 	}
@@ -107,30 +107,30 @@ public class TicketsPanel extends SearchTableForm<Ticket> implements DialogAccep
 	private void setUpButtons()
 	{
 		btnSearch = new JButton("Buscar");
-		btnSearch.setBounds(164, 11, 65, 23);
+		btnSearch.setBounds(164, 11, 80, 23);
 		add(btnSearch);
 
 		btnAdd = new JButton("+");
-		btnAdd.setBounds(517, 49, 47, 83);
+		btnAdd.setBounds(527, 49, 47, 83);
 		add(btnAdd);
 
 		btnRemove = new JButton("-");
-		btnRemove.setBounds(517, 134, 47, 83);
+		btnRemove.setBounds(527, 134, 47, 83);
 		add(btnRemove);
 
 		btnSave = new JButton("Guardar");
-		btnSave.setBounds(299, 271, 133, 23);
+		btnSave.setBounds(309, 271, 133, 23);
 		add(btnSave);
 
 		btnNew = new JButton("Nuevo");
-		btnNew.setBounds(442, 271, 122, 23);
+		btnNew.setBounds(452, 271, 122, 23);
 		add(btnNew);
 	}
 
 	private void setUpTables()
 	{
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 43, 219, 251);
+		scrollPane.setBounds(10, 43, 234, 251);
 		add(scrollPane);
 
 		tableTickets = new TicketTable();
@@ -138,7 +138,7 @@ public class TicketsPanel extends SearchTableForm<Ticket> implements DialogAccep
 		tableTickets.refill(ticketsController.fetchAll());
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(299, 49, 219, 168);
+		scrollPane_1.setBounds(309, 49, 219, 168);
 		add(scrollPane_1);
 
 		tableLines = new TicketLineTable();

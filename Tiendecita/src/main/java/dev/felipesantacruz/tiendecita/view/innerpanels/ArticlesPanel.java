@@ -93,12 +93,12 @@ public class ArticlesPanel extends SearchTableForm<Article>
 		tfId.setColumns(10);
 
 		tfDescription = new JTextField();
-		tfDescription.setBounds(390, 96, 155, 20);
+		tfDescription.setBounds(390, 96, 183, 20);
 		add(tfDescription);
 		tfDescription.setColumns(10);
 
 		tfPrice = new NumberTextField();
-		tfPrice.setBounds(390, 145, 155, 20);
+		tfPrice.setBounds(390, 145, 183, 20);
 		add(tfPrice);
 	}
 
@@ -109,15 +109,15 @@ public class ArticlesPanel extends SearchTableForm<Article>
 		add(btnSearch);
 
 		btnSave = new JButton("Guardar");
-		btnSave.setBounds(390, 255, 71, 23);
+		btnSave.setBounds(390, 255, 84, 23);
 		add(btnSave);
 
 		btnDelete = new JButton("Eliminar");
-		btnDelete.setBounds(474, 255, 71, 23);
+		btnDelete.setBounds(479, 255, 94, 23);
 		add(btnDelete);
 
 		btnNew = new JButton("Nuevo");
-		btnNew.setBounds(474, 44, 71, 23);
+		btnNew.setBounds(474, 44, 99, 23);
 		add(btnNew);
 	}
 

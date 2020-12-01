@@ -37,6 +37,7 @@ public class TicketLineDialog extends JDialog implements DialogAcceptedSubject
 	 */
 	public TicketLineDialog(TicketController controller, Iterator<Article> iterator)
 	{
+		setTitle("Crear nueva línea de ticket");
 		this.controller = controller;
 		setBounds(100, 100, 283, 182);
 		getContentPane().setLayout(new BorderLayout());
