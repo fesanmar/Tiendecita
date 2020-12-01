@@ -5,7 +5,7 @@ import java.util.Iterator;
 import dev.felipesantacruz.tiendecita.dao.ArticleDAO;
 import dev.felipesantacruz.tiendecita.model.Article;
 
-public class ArticleController
+public class ArticleController implements Controller<Article>
 {
 	private ArticleDAO dao;
 	private Article activeArticle;
@@ -20,32 +20,36 @@ public class ArticleController
 		return dao.findByDescription(description).iterator();
 	}
 	
-	public void setActiveArticle(Article a)
+	@Override
+	public void setActiveItem(Article a)
 	{
 		activeArticle = a;
 	}
 	
-	public Article getActiveArticle()
+	@Override
+	public Article getActiveItem()
 	{
 		return activeArticle; 
 	}
 	
+	@Override
 	public Iterator<Article> fetchAll()
 	{
 		return dao.findAll().iterator();
 	}
 	
-	public void insertActiveArticle()
+	@Override
+	public void insertActiveItem()
 	{
 		dao.insert(activeArticle);
 	}
 	
-	public void updateActiveArticle()
+	public void updateActiveItem()
 	{
 		dao.edit(activeArticle);
 	}
 	
-	public void deleteActiveArticle()
+	public void deleteActiveItem()
 	{
 		dao.delete(activeArticle);
 	}

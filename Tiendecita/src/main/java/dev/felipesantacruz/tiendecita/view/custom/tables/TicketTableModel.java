@@ -1,8 +1,9 @@
-package dev.felipesantacruz.tiendecita.view.custom;
+package dev.felipesantacruz.tiendecita.view.custom.tables;
 
 import java.util.Iterator;
 
 import dev.felipesantacruz.tiendecita.model.Ticket;
+import dev.felipesantacruz.tiendecita.view.custom.NotEditableTableModelTemplate;
 
 public class TicketTableModel extends NotEditableTableModelTemplate<Ticket>
 {

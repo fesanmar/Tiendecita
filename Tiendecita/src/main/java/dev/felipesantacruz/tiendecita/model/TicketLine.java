@@ -1,4 +1,4 @@
-package dev.felipesantacruz.tiendecita.model;
+ package dev.felipesantacruz.tiendecita.model;
 
 import java.math.BigDecimal;
 

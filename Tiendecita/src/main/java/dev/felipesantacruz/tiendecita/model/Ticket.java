@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -30,7 +31,8 @@ public class Ticket
 	
 	private BigDecimal amount;
 	
-	@OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL, 
+			orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<TicketLine> lines = new ArrayList<>();
 
 	public Ticket() 
@@ -73,6 +75,11 @@ public class Ticket
 	{
 		lines.remove(line);
 		line.setTicket(null);
+	}
+	
+	public Collection<TicketLine> getTicketLines()
+	{
+		return lines;
 	}
 	
 	@Override

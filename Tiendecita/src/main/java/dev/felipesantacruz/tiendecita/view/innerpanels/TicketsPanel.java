@@ -3,30 +3,35 @@ package dev.felipesantacruz.tiendecita.view.innerpanels;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 
+import dev.felipesantacruz.tiendecita.controllers.Controller;
 import dev.felipesantacruz.tiendecita.controllers.TicketController;
 import dev.felipesantacruz.tiendecita.model.Ticket;
+import dev.felipesantacruz.tiendecita.model.TicketLine;
+import dev.felipesantacruz.tiendecita.view.custom.NumberTextField;
 import dev.felipesantacruz.tiendecita.view.custom.RefillableJTableTemplate;
-import dev.felipesantacruz.tiendecita.view.custom.TicketTable;
+import dev.felipesantacruz.tiendecita.view.custom.SearchTableForm;
+import dev.felipesantacruz.tiendecita.view.custom.tables.TicketLineTable;
+import dev.felipesantacruz.tiendecita.view.custom.tables.TicketTable;
 
-public class TicketsPanel extends JPanel
+public class TicketsPanel extends SearchTableForm<Ticket>
 {
 
 	private static final long serialVersionUID = 1L;
 	private RefillableJTableTemplate<Ticket> tableTickets;
-	private JTable tableLines;
+	private RefillableJTableTemplate<TicketLine> tableLines;
 
 	private JLabel lblDate;
 	private JLabel lblLneas;
 	private JLabel lblTotal;
 
-	private JTextField textField;
-	private JFormattedTextField txtSearchDate;
-	private JFormattedTextField tfDate;
+	private JFormattedTextField tfTotal;
+	private JTextField tfSearchDate;
+	private JTextField tfDate;
 
 	private JButton btnSearch;
 	private JButton btnAdd;
@@ -35,12 +40,13 @@ public class TicketsPanel extends JPanel
 	private JButton btnLimpiarFormulario;
 	
 	private TicketController controller;
-
+	
 	public TicketsPanel(TicketController controller)
 	{
 		this.controller = controller;
 		setLayout(null);
 		setUpComponents();
+		setUpListeners();
 	}
 
 	private void setUpComponents()
@@ -68,19 +74,19 @@ public class TicketsPanel extends JPanel
 
 	private void setUpTextFields()
 	{
-		txtSearchDate = new JFormattedTextField();
-		txtSearchDate.setBounds(10, 12, 133, 20);
-		add(txtSearchDate);
+		tfSearchDate = new JFormattedTextField();
+		tfSearchDate.setBounds(10, 12, 133, 20);
+		add(tfSearchDate);
 
-		tfDate = new JFormattedTextField();
+		tfDate = new JTextField();
 		tfDate.setBounds(299, 12, 265, 20);
 		add(tfDate);
 
-		textField = new JTextField();
-		textField.setEditable(false);
-		textField.setBounds(299, 240, 265, 20);
-		add(textField);
-		textField.setColumns(10);
+		tfTotal = new NumberTextField();
+		tfTotal.setEditable(false);
+		tfTotal.setBounds(299, 240, 265, 20);
+		add(tfTotal);
+		tfTotal.setColumns(10);
 	}
 
 	private void setUpButtons()
@@ -120,8 +126,35 @@ public class TicketsPanel extends JPanel
 		scrollPane_1.setBounds(299, 49, 219, 168);
 		add(scrollPane_1);
 
-		tableLines = new JTable(new String[][] {}, new String[] { "Art.", "Cantidad", "Precio", "Total" });
+		tableLines = new TicketLineTable();
 		scrollPane_1.setViewportView(tableLines);
+	}
+	
+	private void setUpListeners()
+	{
+		ListSelectionModel selectionModel = tableTickets.getSelectionModel();
+		selectionModel.addListSelectionListener(getTableSelectionListener());
+	}
+	
+	@Override
+	protected void fillForm()
+	{
+		Ticket ticket = controller.getActiveItem();
+		tfDate.setText(ticket.toString());
+		tfTotal.setValue(ticket.getAmount());
+		tableLines.refill(ticket.getTicketLines().iterator());
+	}
+
+	@Override
+	protected JTable getSelectableTable()
+	{
+		return tableTickets;
+	}
+
+	@Override
+	protected Controller<Ticket> getController()
+	{
+		return controller;
 	}
 
 }

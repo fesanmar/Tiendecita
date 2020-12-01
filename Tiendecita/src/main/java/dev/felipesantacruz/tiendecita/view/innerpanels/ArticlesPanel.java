@@ -1,7 +1,7 @@
 package dev.felipesantacruz.tiendecita.view.innerpanels;
 
-import static java.lang.String.valueOf;
 import static java.lang.String.format;
+import static java.lang.String.valueOf;
 
 import java.math.BigDecimal;
 
@@ -9,22 +9,22 @@ import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.text.NumberFormatter;
 
 import dev.felipesantacruz.tiendecita.controllers.ArticleController;
+import dev.felipesantacruz.tiendecita.controllers.Controller;
 import dev.felipesantacruz.tiendecita.model.Article;
-import dev.felipesantacruz.tiendecita.view.custom.ArticlesTable;
 import dev.felipesantacruz.tiendecita.view.custom.NumberTextField;
 import dev.felipesantacruz.tiendecita.view.custom.RefillableJTableTemplate;
+import dev.felipesantacruz.tiendecita.view.custom.SearchTableForm;
+import dev.felipesantacruz.tiendecita.view.custom.tables.ArticlesTable;
 
-public class ArticlesPanel extends JPanel
+public class ArticlesPanel extends SearchTableForm<Article>
 {
 	private static final long serialVersionUID = 1L;
 	private JTextField tfSearch;
@@ -32,7 +32,6 @@ public class ArticlesPanel extends JPanel
 	private JTextField tfId;
 	private JTextField tfDescription;
 	private JFormattedTextField tfPrice;
-	private ArticleController controller;
 	private JSpinner spStock;
 	private JButton btnNew;
 	private JButton btnSave;
@@ -40,7 +39,7 @@ public class ArticlesPanel extends JPanel
 	private JButton btnSearch;
 	private String verb;
 
-	private ListSelectionListener tableSelectionListener = this::manageTableSelection;
+	private ArticleController controller;
 
 	public ArticlesPanel(ArticleController articleController)
 	{
@@ -154,7 +153,7 @@ public class ArticlesPanel extends JPanel
 		tfPrice.setValue(0.00);
 		spStock.setValue(0);
 		tableArticles.clearSelection();
-		controller.setActiveArticle(new Article());
+		controller.setActiveItem(new Article());
 	}
 
 	private void setUpListeners()
@@ -215,13 +214,13 @@ public class ArticlesPanel extends JPanel
 
 	private void insertNewArticle()
 	{
-		controller.insertActiveArticle();
+		controller.insertActiveItem();
 		verb = "guardado";
 	}
 	
 	private void editArticle()
 	{
-		controller.updateActiveArticle();
+		controller.updateActiveItem();
 		verb = "actualizado";
 	}
 	
@@ -232,17 +231,29 @@ public class ArticlesPanel extends JPanel
 
 	private void setActiveArticleFromForm()
 	{
-		Article article = controller.getActiveArticle();
+		Article article = controller.getActiveItem();
 		article.setDescription(tfDescription.getText());
-		article.setPrice((BigDecimal) tfPrice.getValue());
+		article.setPrice(getPriceFromForm());
 		article.setStock((int) spStock.getValue());
+	}
+
+	private BigDecimal getPriceFromForm()
+	{
+		Object price = tfPrice.getValue();
+		try
+		{
+			return (BigDecimal) price;
+		} catch (ClassCastException ce)
+		{
+			return BigDecimal.valueOf(Double.valueOf(price.toString()));
+		}
 	}
 
 	private void fillTableAndClearForm()
 	{
-		tableArticles.getSelectionModel().removeListSelectionListener(tableSelectionListener);
+		tableArticles.getSelectionModel().removeListSelectionListener(getTableSelectionListener());
 		tableArticles.refill(controller.fetchAll());
-		tableArticles.getSelectionModel().addListSelectionListener(tableSelectionListener);
+		tableArticles.getSelectionModel().addListSelectionListener(getTableSelectionListener());
 		clearForm();
 	}
 
@@ -266,7 +277,7 @@ public class ArticlesPanel extends JPanel
 
 	private void deleteArticleAndShowSuccessMessage()
 	{
-		controller.deleteActiveArticle();
+		controller.deleteActiveItem();
 		verb = "eliminado";
 		displayExitActions();
 	}
@@ -274,40 +285,28 @@ public class ArticlesPanel extends JPanel
 	private void setUpSelectionListeners()
 	{
 		ListSelectionModel selectionModel = tableArticles.getSelectionModel();
-		selectionModel.addListSelectionListener(tableSelectionListener);
+		selectionModel.addListSelectionListener(getTableSelectionListener());
 	}
 
-	private void manageTableSelection(ListSelectionEvent e)
+	@Override
+	protected void fillForm()
 	{
-		if (e.getValueIsAdjusting())
-			selectNewArticle();
-	}
-
-	private void selectNewArticle()
-	{
-		Article article = (Article) tableArticles.getValueAt(tableArticles.getSelectedRow(), 0);
-		if (hasChanged(article))
-			setNewArticle(article);
-		fillForm();
-
-	}
-
-	private boolean hasChanged(Article article)
-	{
-		return controller.getActiveArticle() != article;
-	}
-
-	private void setNewArticle(Article article)
-	{
-		controller.setActiveArticle(article);
-	}
-
-	private void fillForm()
-	{
-		Article newArticle = controller.getActiveArticle();
+		Article newArticle = controller.getActiveItem();
 		tfId.setText(valueOf(newArticle.getId()));
 		tfDescription.setText(newArticle.getDescription());
 		tfPrice.setValue(newArticle.getPrice());
 		spStock.setValue(newArticle.getStock());
+	}
+
+	@Override
+	protected JTable getSelectableTable()
+	{
+		return tableArticles;
+	}
+
+	@Override
+	protected Controller<Article> getController()
+	{
+		return controller;
 	}
 }
