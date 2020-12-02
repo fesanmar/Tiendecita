@@ -58,7 +58,7 @@ public class TicketLineDialog extends JDialog implements DialogAcceptedSubject
 		contentPanel.add(spQuantity);
 		
 		JLabel lblQuantity = new JLabel("Cantidad");
-		lblQuantity.setBounds(10, 58, 46, 14);
+		lblQuantity.setBounds(10, 58, 50, 14);
 		contentPanel.add(lblQuantity);
 		
 		cbArticles = new JComboBox<>(createArrayFromIterator(iterator));
