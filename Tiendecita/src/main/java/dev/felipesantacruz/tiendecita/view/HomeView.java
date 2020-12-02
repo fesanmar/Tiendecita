@@ -9,6 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -92,8 +93,9 @@ public class HomeView extends JFrame implements WindowListener
 	public HomeView()
 	{
 		setTitle("Tiendecita");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setBounds(100, 100, 639, 418);
+		addWindowListener(this);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -140,10 +142,17 @@ public class HomeView extends JFrame implements WindowListener
 	public void windowOpened(WindowEvent e) { }
 
 	@Override
-	public void windowClosing(WindowEvent e) { }
+	public void windowClosing(WindowEvent e) 
+	{
+		int option = JOptionPane.showOptionDialog(this, "¿Seguro que quiere abandonar el programa?", "Tiendecita se cerrará", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+		if (option == 0)
+			closeResourcesAndLeave();
+	}
 
 	@Override
-	public void windowClosed(WindowEvent e)
+	public void windowClosed(WindowEvent e) { }
+
+	private void closeResourcesAndLeave()
 	{
 		sessionFactory.close();
 		System.exit(0);
