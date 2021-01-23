@@ -4,6 +4,8 @@ import java.awt.CardLayout;
 import java.awt.EventQueue;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.net.URISyntaxException;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -25,8 +27,11 @@ import dev.felipesantacruz.tiendecita.dao.ArticleDatabaseDAO;
 import dev.felipesantacruz.tiendecita.dao.TicketDAO;
 import dev.felipesantacruz.tiendecita.dao.TicketDatabaseDAO;
 import dev.felipesantacruz.tiendecita.model.Article;
+import dev.felipesantacruz.tiendecita.services.JRTiendecitaReport;
+import dev.felipesantacruz.tiendecita.services.ReportService;
 import dev.felipesantacruz.tiendecita.view.innerpanels.ArticlesPanel;
 import dev.felipesantacruz.tiendecita.view.innerpanels.TicketsPanel;
+import net.sf.jasperreports.engine.JRException;
 
 
 public class HomeView extends JFrame implements WindowListener
@@ -35,6 +40,11 @@ public class HomeView extends JFrame implements WindowListener
 	private JPanel contentPane;
 	private ArticlesPanel articlesPanel;
 	private TicketsPanel ticketsPanel;
+	
+	private JMenuItem mntmManageArticles;
+	private JMenuItem mntmManageTickets;
+	private JMenuItem mntmArticlesList;
+	
 	private static SessionFactory sessionFactory;
 	private static ArticleDAO articleDAO;
 	private static TicketDAO ticketDAO;
@@ -103,14 +113,14 @@ public class HomeView extends JFrame implements WindowListener
 		JMenu mnArticles = new JMenu("Artículos");
 		menuBar.add(mnArticles);
 		
-		JMenuItem mntmManageArticles = new JMenuItem("Gestionar artículos");
+		mntmManageArticles = new JMenuItem("Gestionar artículos");
 		
 		mnArticles.add(mntmManageArticles);
 		
 		JMenu mnTickets = new JMenu("Tickets");
 		menuBar.add(mnTickets);
 		
-		JMenuItem mntmManageTickets = new JMenuItem("Gestionar tickets");
+		mntmManageTickets = new JMenuItem("Gestionar tickets");
 		mnTickets.add(mntmManageTickets);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(10, 20, 20, 20));
@@ -124,18 +134,47 @@ public class HomeView extends JFrame implements WindowListener
 		ticketsPanel.setName("Tickets");
 		contentPane.add(ticketsPanel, ticketsPanel.getName());
 		
-		addActionListeners(mntmManageArticles, mntmManageTickets);
+		
+		JMenu mnReports = new JMenu("Informes");
+		menuBar.add(mnReports);
+		
+		mntmArticlesList = new JMenuItem("Listado artículos");
+		mnReports.add(mntmArticlesList);
+		
+		JMenuItem mntmTicketsByDate = new JMenuItem("Tickets por fecha");
+		mnReports.add(mntmTicketsByDate);
+
+		addActionListeners();
 	}
 
-	private void addActionListeners(JMenuItem mntmManageArticles, JMenuItem mntmManageTickets)
+	private void addActionListeners()
 	{
 		mntmManageArticles.addActionListener(e -> showCard(articlesPanel.getName()));
 		mntmManageTickets.addActionListener(e -> showCard(ticketsPanel.getName()));
+		mntmArticlesList.addActionListener(e -> displayReport("reports/articles_report.jasper", null));
 	}
 	
 	private void showCard(String cardName)
 	{
 		((CardLayout) contentPane.getLayout()).show(contentPane, cardName);
+	}
+	
+	void displayReport(String jasperCompilationPath, Map<String, Object> params)
+	{
+		try
+		{
+			ReportService reportService = 
+					new JRTiendecitaReport(sessionFactory, jasperCompilationPath)
+					.setParams(params);
+			reportService.createReport();
+			
+		} catch (URISyntaxException | JRException | RuntimeException e1)
+		{
+			JOptionPane.showMessageDialog(this,
+				    "Ocurrió un error al crear el informe",
+				    "Error al generar el informe",
+				    JOptionPane.ERROR_MESSAGE);
+		}
 	}
 
 	@Override
