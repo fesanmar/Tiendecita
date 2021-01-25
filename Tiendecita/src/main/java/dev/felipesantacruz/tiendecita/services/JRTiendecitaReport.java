@@ -2,10 +2,12 @@ package dev.felipesantacruz.tiendecita.services;
 
 import java.awt.Desktop;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,19 +48,33 @@ public class JRTiendecitaReport implements ReportService
 	{
 		try (Session session = sessionFactory.openSession())
 		{
-			session.doWork(conn ->
-			{
-				try
-				{
-					JasperPrint print = JasperFillManager.fillReport(report, params, conn);
-					File tempFile = File.createTempFile(report.getName(), ".pdf");
-					JasperExportManager.exportReportToPdfStream(print, new FileOutputStream(tempFile));
-					Desktop.getDesktop().open(tempFile);
-				} catch (JRException | IOException e)
-				{
-					throw new ReportConstructionException(e.toString());
-				}
-			});
+			session.doWork(this::createReportAndDisplayIt);
 		}
+	}
+
+	void createReportAndDisplayIt(Connection conn)
+	{
+		try
+		{
+			File tempFile = createReportFromConnection(conn);
+			displayReportOnDefaultPdfViewer(tempFile);
+		} catch (JRException | IOException e)
+		{
+			throw new ReportConstructionException(e.toString());
+		}
+	}
+
+	private File createReportFromConnection(Connection conn) throws JRException, IOException, FileNotFoundException
+	{
+		JasperPrint print = JasperFillManager.fillReport(report, params, conn);
+		File tempFile = File.createTempFile(report.getName(), ".pdf");
+		JasperExportManager.exportReportToPdfStream(print, new FileOutputStream(tempFile));
+		return tempFile;
+	}
+	
+	private void displayReportOnDefaultPdfViewer(File tempFile) throws IOException
+	{
+		Desktop.getDesktop().open(tempFile);
+		tempFile.deleteOnExit();
 	}
 }

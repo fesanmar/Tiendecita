@@ -5,8 +5,12 @@ import java.awt.EventQueue;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.net.URISyntaxException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -29,6 +33,8 @@ import dev.felipesantacruz.tiendecita.dao.TicketDatabaseDAO;
 import dev.felipesantacruz.tiendecita.model.Article;
 import dev.felipesantacruz.tiendecita.services.JRTiendecitaReport;
 import dev.felipesantacruz.tiendecita.services.ReportService;
+import dev.felipesantacruz.tiendecita.utils.DateFromToPublisher;
+import dev.felipesantacruz.tiendecita.view.custom.dialogs.DateFromToDialogAsker;
 import dev.felipesantacruz.tiendecita.view.innerpanels.ArticlesPanel;
 import dev.felipesantacruz.tiendecita.view.innerpanels.TicketsPanel;
 import net.sf.jasperreports.engine.JRException;
@@ -44,10 +50,9 @@ public class HomeView extends JFrame implements WindowListener
 	private JMenuItem mntmManageArticles;
 	private JMenuItem mntmManageTickets;
 	private JMenuItem mntmArticlesList;
+	private JMenuItem mntmTicketsByDate;
 	
 	private static SessionFactory sessionFactory;
-	private static ArticleDAO articleDAO;
-	private static TicketDAO ticketDAO;
 	private static ArticleController articleController;
 	private static TicketController ticketController;
 
@@ -58,24 +63,21 @@ public class HomeView extends JFrame implements WindowListener
 	public static void main(String[] args) throws ClassNotFoundException
 	{
 		sessionFactory = new Configuration().addAnnotatedClass(Article.class).configure().buildSessionFactory();
-		articleDAO = new ArticleDatabaseDAO(sessionFactory);
-		ticketDAO = new TicketDatabaseDAO(sessionFactory);
+		ArticleDAO articleDAO = new ArticleDatabaseDAO(sessionFactory);
+		TicketDAO ticketDAO = new TicketDatabaseDAO(sessionFactory);
 		articleController = new ArticleController(articleDAO);
 		ticketController = new TicketController(ticketDAO);
 		
 		setLookAndFeel();
-		EventQueue.invokeLater(new Runnable()
+		EventQueue.invokeLater( () ->
 		{
-			public void run()
+			try
 			{
-				try
-				{
-					HomeView frame = new HomeView();
-					frame.setVisible(true);
-				} catch (Exception e)
-				{
-					e.printStackTrace();
-				}
+				HomeView frame = new HomeView();
+				frame.setVisible(true);
+			} catch (Exception e)
+			{
+				e.printStackTrace();
 			}
 		});
 	}
@@ -141,7 +143,7 @@ public class HomeView extends JFrame implements WindowListener
 		mntmArticlesList = new JMenuItem("Listado artículos");
 		mnReports.add(mntmArticlesList);
 		
-		JMenuItem mntmTicketsByDate = new JMenuItem("Tickets por fecha");
+		mntmTicketsByDate = new JMenuItem("Tickets por fecha");
 		mnReports.add(mntmTicketsByDate);
 
 		addActionListeners();
@@ -152,6 +154,18 @@ public class HomeView extends JFrame implements WindowListener
 		mntmManageArticles.addActionListener(e -> showCard(articlesPanel.getName()));
 		mntmManageTickets.addActionListener(e -> showCard(ticketsPanel.getName()));
 		mntmArticlesList.addActionListener(e -> displayReport("reports/articles_report.jasper", null));
+		mntmTicketsByDate.addActionListener(e -> 
+		{
+			try
+			{
+				JDialog dialog = new DateFromToDialogAsker(this, this::update);
+				dialog.setVisible(true);
+			} catch (ParseException e1)
+			{
+				e1.printStackTrace();
+			}
+		});
+			
 	}
 	
 	private void showCard(String cardName)
@@ -177,13 +191,24 @@ public class HomeView extends JFrame implements WindowListener
 		}
 	}
 
+	public void update(Timestamp from, Timestamp to)
+	{
+		Map<String, Object> params = new HashMap<>();
+		params.put("dateFrom", from);
+		params.put("dateTo", to);
+		displayReport("reports/tickets_report.jasper", params);
+	}
+	
 	@Override
 	public void windowOpened(WindowEvent e) { }
 
 	@Override
 	public void windowClosing(WindowEvent e) 
 	{
-		int option = JOptionPane.showOptionDialog(this, "¿Seguro que quiere abandonar el programa?", "Tiendecita se cerrará", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+		int option = JOptionPane.showOptionDialog(
+				this, "¿Seguro que quiere abandonar el programa?", 
+				"Tiendecita se cerrará", 
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 		if (option == 0)
 			closeResourcesAndLeave();
 	}
