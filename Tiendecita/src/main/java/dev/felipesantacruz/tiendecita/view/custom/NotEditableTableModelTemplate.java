@@ -7,19 +7,40 @@ import java.util.List;
 
 import javax.swing.table.AbstractTableModel;
 
+/**
+ * Modelo para tablas con celdas no editables.
+ * Esta clase facilita el uso de las tablas de <code>Swing</code>, siendo necesario
+ * impolementar sólo el método {@link NotEditableTableModelTemplate#fillNewRow(Object[], Object)}.
+ * Trabaja en conjunto con {@link RefillableJTableTemplate}.
+ * @author Felipe Santa-Cruz
+ * @version 1.0
+ * @param <T> el modelo de datos que se quiere gestionar con este <code>TableModel</code>
+ */
 public abstract class NotEditableTableModelTemplate<T> extends AbstractTableModel
 {
 	private static final long serialVersionUID = 1L;
 	private final String[] colNames;
 	private Object[][] data = {};
 	
-	public NotEditableTableModelTemplate(String[] colNames)
+	/**
+	 * Crea un <code>TableModel</code> no editable con las cabeceras establecidas en
+	 * <code>colNames</code>
+	 * @param colNames las cabeceras que tendrá la tabla que use este componente como <code>TableModel</code>
+	 */
+	protected NotEditableTableModelTemplate(String[] colNames)
 	{
 		this.colNames = colNames;
 		
 	}
 	
-	public NotEditableTableModelTemplate(String[] colNames, Iterator<T> iterator)
+	/**
+	 * Crea un <code>TableModel</code> no editable con las cabeceras establecidas en
+	 * <code>colNames</code>, y la rellena con los datos contenidos en <code>iterator</code>
+	 * @param colNames las cabeceras que tendrá la tabla que use este componente como <code>TableModel</code>
+	 * @param iterator el iterador con los datos que se usarán para rellenar la tabla que use este 
+	 * componente como <code>TableModel</code>
+	 */
+	protected NotEditableTableModelTemplate(String[] colNames, Iterator<T> iterator)
 	{
 		this.colNames = colNames;
 		data = formatTableDataFrom(iterator);
@@ -43,6 +64,13 @@ public abstract class NotEditableTableModelTemplate<T> extends AbstractTableMode
 		dataList.add(row);
 	}
 	
+	/**
+	 * Rellena <code>row</code> con los datos contenidos en <code>item</code>.
+	 * Este cambio se hará palpable también en la tabla que use este componente como 
+	 * <code>TableModel</code>. 
+	 * @param row la lista que será rellenada con los datos de <code>item</code>
+	 * @param item el contenedor con cuyos datos se poblará <code>row</code>
+	 */
 	protected abstract void fillNewRow(Object[] row, T item);
 	
 	private  Object[][] listToArray(List<Object[]> dataList)
@@ -51,11 +79,21 @@ public abstract class NotEditableTableModelTemplate<T> extends AbstractTableMode
 		return dataList.toArray(formatedTable);
 	}
 	
+	/**
+	 * Devuelve las cabeceras de este <code>TableModel</code>
+	 * @return un <code>Array</code> con los nombres de las cabeceras de este <code>TableModel</code>
+	 * y, por lo tanto, de la table que le esté dando uso 
+	 */
 	protected String[] getColNames()
 	{
 		return colNames;
 	}
 	
+	/**
+	 * Devuelve un <code>Array</code> bidimensional con los datos contenidos en este <code>TableModel</code>
+	 * y, por lo tanto, de la table que le esté dando uso 
+	 * @return
+	 */
 	protected Object[][] getData()
 	{
 		return data;
@@ -97,6 +135,13 @@ public abstract class NotEditableTableModelTemplate<T> extends AbstractTableMode
 		return false;
 	}
 	
+	/**
+	 * Devuelve el índice, es decir, el número de fila, que ocupa <code>element</code> dentro
+	 * del <code>TableModel</code> y, por lo tanto, de la table que le esté dando uso 
+	 * @param element el ítem del que se quiere conocer la ubicación
+	 * @return el número de fila que ocupa <code>element</code> dentro del code>TableModel</code>.
+	 * Devolverá <code>-1</code> en el caso de que <code>element</code> no sea encontrado
+	 */
 	public int getIndexOf(Object element)
 	{
 		for (int row = 0; row < data.length; row++)
