@@ -40,7 +40,7 @@ import dev.felipesantacruz.tiendecita.view.innerpanels.TicketsPanel;
 import net.sf.jasperreports.engine.JRException;
 
 
-public class HomeView extends JFrame implements WindowListener
+public class HomeView extends JFrame implements WindowListener, DateFromToSubscriber
 {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -57,8 +57,8 @@ public class HomeView extends JFrame implements WindowListener
 	private static TicketController ticketController;
 
 	/**
-	 * Launch the application.
-	 * @throws ClassNotFoundException 
+	 * Lanza esta aplicación.
+	 * @throws ClassNotFoundException si el no es encuentra el Look And Feel.
 	 */
 	public static void main(String[] args) throws ClassNotFoundException
 	{
@@ -100,7 +100,7 @@ public class HomeView extends JFrame implements WindowListener
 	}
 
 	/**
-	 * Create the frame.
+	 * Crea el frame de la ventana principal.
 	 */
 	public HomeView()
 	{
@@ -173,7 +173,7 @@ public class HomeView extends JFrame implements WindowListener
 		((CardLayout) contentPane.getLayout()).show(contentPane, cardName);
 	}
 	
-	void displayReport(String jasperCompilationPath, Map<String, Object> params)
+	private void displayReport(String jasperCompilationPath, Map<String, Object> params)
 	{
 		try
 		{
@@ -191,6 +191,7 @@ public class HomeView extends JFrame implements WindowListener
 		}
 	}
 
+	@Override
 	public void update(Timestamp from, Timestamp to)
 	{
 		Map<String, Object> params = new HashMap<>();
