@@ -3,7 +3,7 @@ package dev.felipesantacruz.tiendecita.controllers;
 import java.util.Iterator;
 
 /**
- * Representa el controlador de un momdelo de datos.
+ * Representa el controlador de un modelo de datos.
  * Permite realizar operaciones como obtener todos los items del modelo,
  * fijar un ítem como el ítem activo, persistirlo y recuperarlo.
  * @author Felipe Santa-Cruz
@@ -31,7 +31,7 @@ public interface Controller<T>
 	 * Recupera todos los elementos disponibles en este controlador. Por ejemplo, 
 	 * podria devolver todos los ítems guardados en una base de datos, en un fichero 
 	 * o símplemente en una lista.
-	 * @return un  <code>Iterator</code> con los elementos del tipo <code>T</code> administrados
+	 * @return un  <code>Iterator</code> con los elementos del tipo <T> administrados
 	 * por este controlador 
 	 */
 	public Iterator<T> fetchAll();
