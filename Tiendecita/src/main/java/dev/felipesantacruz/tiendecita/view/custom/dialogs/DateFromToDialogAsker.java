@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import dev.felipesantacruz.tiendecita.utils.DateFromToPublisher;
+import dev.felipesantacruz.tiendecita.utils.DateFromToSubscriber;
 import dev.felipesantacruz.tiendecita.utils.DateUtil;
 import dev.felipesantacruz.tiendecita.view.custom.DateFormattedTextField;
 
@@ -30,7 +30,7 @@ public class DateFromToDialogAsker extends JDialog
 	private JFormattedTextField tfTo;
 	private LocalDate dateFrom;
 	private LocalDate dateTo;
-	private DateFromToPublisher publisher;
+	private DateFromToSubscriber publisher;
 
 
 	/**
@@ -38,7 +38,7 @@ public class DateFromToDialogAsker extends JDialog
 	 * 
 	 * @throws ParseException
 	 */
-	public DateFromToDialogAsker(JFrame f, DateFromToPublisher publisher) throws ParseException
+	public DateFromToDialogAsker(JFrame f, DateFromToSubscriber publisher) throws ParseException
 	{
 		super(f);
 		this.publisher = publisher;

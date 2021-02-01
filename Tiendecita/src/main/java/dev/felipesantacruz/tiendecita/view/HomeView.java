@@ -33,7 +33,7 @@ import dev.felipesantacruz.tiendecita.dao.TicketDatabaseDAO;
 import dev.felipesantacruz.tiendecita.model.Article;
 import dev.felipesantacruz.tiendecita.services.JRTiendecitaReport;
 import dev.felipesantacruz.tiendecita.services.ReportService;
-import dev.felipesantacruz.tiendecita.utils.DateFromToPublisher;
+import dev.felipesantacruz.tiendecita.utils.DateFromToSubscriber;
 import dev.felipesantacruz.tiendecita.view.custom.dialogs.DateFromToDialogAsker;
 import dev.felipesantacruz.tiendecita.view.innerpanels.ArticlesPanel;
 import dev.felipesantacruz.tiendecita.view.innerpanels.TicketsPanel;
