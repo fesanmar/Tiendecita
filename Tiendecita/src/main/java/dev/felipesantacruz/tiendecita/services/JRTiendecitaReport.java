@@ -22,12 +22,27 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
+/**
+ * Generador de informes de <b>Tiendecita</b>.
+ * @author Felipe Santa-Cruz
+ *
+ */
 public class JRTiendecitaReport implements ReportService
 {
 	private SessionFactory sessionFactory;
 	private JasperReport report;
 	private Map<String, Object> params = new HashMap<>();
 
+	/**
+	 * Crea un generador de informes.
+	 * @param sessionFactory la fábrica de sesiones que será usada para crear las sesiones
+	 * con las que se realizarán las consultas a la base de datos
+	 * @param jasperFilepath la ruta al archivos <code>.jasper</code> que contiene la 
+	 * plantilla del informe
+	 * @throws URISyntaxException si <code>jasperFilepath</code> no puede ser parseado
+	 * a una URI
+	 * @throws JRException si no se puede cargar el archivo <code>.jasper</code>
+	 */
 	public JRTiendecitaReport(SessionFactory sessionFactory, String jasperFilepath)
 			throws URISyntaxException, JRException
 	{
@@ -37,6 +52,12 @@ public class JRTiendecitaReport implements ReportService
 		report = (JasperReport) JRLoader.loadObject(file);
 	}
 	
+	/**
+	 * Establece los parámetros que se pasarán al informe
+	 * @param params pares clave valor con los nombres de los parámetro que se pasarán al
+	 * informe y sus valores
+	 * @return el propio generador de informes, ya con los parámetros establecidos
+	 */
 	public JRTiendecitaReport setParams(Map<String, Object> params)
 	{
 		this.params = params;
