@@ -24,6 +24,13 @@ import dev.felipesantacruz.tiendecita.view.custom.RefillableJTableTemplate;
 import dev.felipesantacruz.tiendecita.view.custom.SearchTableForm;
 import dev.felipesantacruz.tiendecita.view.custom.tables.ArticlesTable;
 
+/**
+ * Formulario para gestionar el model de datos {@link Article}.
+ * Este formulario, como subclase de {@link SearchTableForm}, contiene
+ * una tabla.
+ * @author Felipe Santa-Cruz
+ * @version 1.0
+ */
 public class ArticlesPanel extends SearchTableForm<Article>
 {
 	private static final long serialVersionUID = 1L;
@@ -41,6 +48,12 @@ public class ArticlesPanel extends SearchTableForm<Article>
 
 	private ArticleController controller;
 
+	/**
+	 * Crea un formulario para gestionar el elementos de tipo
+	 * {@link Article} a partir de controlador del tipo {@link ArticleController}
+	 * @param articleController controlador que será utilizado para realizar las operaciones
+	 * recuperación y persistencia de los elemenos gestionados en este formulario
+	 */
 	public ArticlesPanel(ArticleController articleController)
 	{
 		controller = articleController;
@@ -168,9 +181,7 @@ public class ArticlesPanel extends SearchTableForm<Article>
 		btnNew.addActionListener(e -> clearForm());
 		btnSave.addActionListener(e -> saveArticle());
 		btnDelete.addActionListener(e -> delteArticle());
-		btnSearch.addActionListener(w -> {
-			tableArticles.refill(controller.fetchArticlesWithDescription(tfSearch.getText()));
-		});
+		btnSearch.addActionListener(w -> searchByDescriptionAndRefillTable());
 	}
 
 	private void saveArticle()
@@ -280,6 +291,11 @@ public class ArticlesPanel extends SearchTableForm<Article>
 		controller.deleteActiveItem();
 		verb = "eliminado";
 		displayExitActions();
+	}
+	
+	private void searchByDescriptionAndRefillTable()
+	{
+		tableArticles.refill(controller.fetchArticlesWithDescription(tfSearch.getText()));
 	}
 
 	private void setUpSelectionListeners()

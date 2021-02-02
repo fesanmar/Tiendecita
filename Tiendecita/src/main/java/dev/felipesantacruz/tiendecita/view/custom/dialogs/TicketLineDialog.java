@@ -1,4 +1,4 @@
-package dev.felipesantacruz.tiendecita.view.innerpanels;
+package dev.felipesantacruz.tiendecita.view.custom.dialogs;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -20,6 +20,8 @@ import dev.felipesantacruz.tiendecita.controllers.TicketController;
 import dev.felipesantacruz.tiendecita.model.Article;
 import dev.felipesantacruz.tiendecita.model.Ticket;
 import dev.felipesantacruz.tiendecita.model.TicketLine;
+import dev.felipesantacruz.tiendecita.view.innerpanels.DialogAcceptedObserver;
+import dev.felipesantacruz.tiendecita.view.innerpanels.DialogAcceptedSubject;
 
 public class TicketLineDialog extends JDialog implements DialogAcceptedSubject
 {
@@ -29,11 +31,19 @@ public class TicketLineDialog extends JDialog implements DialogAcceptedSubject
 	private final TicketLine line = new TicketLine();
 	private JComboBox<Article> cbArticles;
 	private JSpinner spQuantity;
-	private DialogAcceptedObserver observer = () -> {};
-
+	private transient DialogAcceptedObserver observer = () -> { };
 
 	/**
-	 * Create the dialog.
+	 * Crea un diálogo que permite introducir los datos para crear o modificar una
+	 * línea de ticket en el ticket actual.
+	 * 
+	 * @param controller el {@link TicketController} que realizará la operación de
+	 *                   inserción o modificación sobre el ticket cuya línea de
+	 *                   ticket será modificada o insertada
+	 * @param iterator   un <code>Iterator</code> que contiene todos los artículos
+	 *                   disponibles para que puedan ser seleccionados como el
+	 *                   artículo de la línea de ticket que será modificada o
+	 *                   insertada
 	 */
 	public TicketLineDialog(TicketController controller, Iterator<Article> iterator)
 	{
@@ -45,45 +55,39 @@ public class TicketLineDialog extends JDialog implements DialogAcceptedSubject
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		
+
 		JLabel lblArticles = new JLabel("Art\u00EDculos");
 		lblArticles.setBounds(10, 22, 46, 14);
 		contentPanel.add(lblArticles);
-		
+
 		spQuantity = new JSpinner();
 		spQuantity.setBounds(83, 55, 153, 20);
 		JFormattedTextField txt = ((JSpinner.NumberEditor) spQuantity.getEditor()).getTextField();
 		NumberFormatter formatter = (NumberFormatter) txt.getFormatter();
 		formatter.setAllowsInvalid(false);
 		contentPanel.add(spQuantity);
-		
+
 		JLabel lblQuantity = new JLabel("Cantidad");
 		lblQuantity.setBounds(10, 58, 50, 14);
 		contentPanel.add(lblQuantity);
-		
+
 		cbArticles = new JComboBox<>(createArrayFromIterator(iterator));
 		cbArticles.setBounds(83, 19, 153, 20);
 		contentPanel.add(cbArticles);
-		{
-			JPanel buttonPane = new JPanel();
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
-			{
-				JButton okButton = new JButton("OK");
-				okButton.setActionCommand("OK");
-				buttonPane.add(okButton);
-				getRootPane().setDefaultButton(okButton);
-				okButton.addActionListener(e -> addNewLineToActiveTicket());
-			}
-			{
-				JButton cancelButton = new JButton("Cancelar");
-				cancelButton.setActionCommand("Cancelar");
-				buttonPane.add(cancelButton);
-				cancelButton.addActionListener(e -> dispose());
-			}
-		}
+		JPanel buttonPane = new JPanel();
+		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		getContentPane().add(buttonPane, BorderLayout.SOUTH);
+		JButton okButton = new JButton("OK");
+		okButton.setActionCommand("OK");
+		buttonPane.add(okButton);
+		getRootPane().setDefaultButton(okButton);
+		okButton.addActionListener(e -> addNewLineToActiveTicket());
+		JButton cancelButton = new JButton("Cancelar");
+		cancelButton.setActionCommand("Cancelar");
+		buttonPane.add(cancelButton);
+		cancelButton.addActionListener(e -> dispose());
 	}
-	
+
 	private Article[] createArrayFromIterator(Iterator<Article> iterator)
 	{
 		List<Article> articlesList = new ArrayList<>();
@@ -91,7 +95,7 @@ public class TicketLineDialog extends JDialog implements DialogAcceptedSubject
 			articlesList.add(iterator.next());
 		return articlesList.toArray(new Article[articlesList.size()]);
 	}
-	
+
 	private void addNewLineToActiveTicket()
 	{
 		Ticket activeTicket = controller.getActiveItem();

@@ -20,24 +20,29 @@ import javax.swing.ListSelectionModel;
 import dev.felipesantacruz.tiendecita.controllers.ArticleController;
 import dev.felipesantacruz.tiendecita.controllers.Controller;
 import dev.felipesantacruz.tiendecita.controllers.TicketController;
+import dev.felipesantacruz.tiendecita.model.Article;
 import dev.felipesantacruz.tiendecita.model.Ticket;
 import dev.felipesantacruz.tiendecita.model.TicketLine;
 import dev.felipesantacruz.tiendecita.view.custom.NumberTextField;
 import dev.felipesantacruz.tiendecita.view.custom.RefillableJTableTemplate;
 import dev.felipesantacruz.tiendecita.view.custom.SearchTableForm;
+import dev.felipesantacruz.tiendecita.view.custom.dialogs.TicketLineDialog;
 import dev.felipesantacruz.tiendecita.view.custom.tables.TicketLineTable;
 import dev.felipesantacruz.tiendecita.view.custom.tables.TicketTable;
 
+/**
+ * Formulario para gestionar el model de datos {@link Ticket}.
+ * Este formulario, como subclase de {@link SearchTableForm}, contiene
+ * una tabla.
+ * @author Felipe Santa-Cruz
+ * @version 1.0
+ */
 public class TicketsPanel extends SearchTableForm<Ticket> implements DialogAcceptedObserver
 {
 
 	private static final long serialVersionUID = 1L;
 	private RefillableJTableTemplate<Ticket> tableTickets;
 	private RefillableJTableTemplate<TicketLine> tableLines;
-
-	private JLabel lblDate;
-	private JLabel lblLneas;
-	private JLabel lblTotal;
 
 	private JFormattedTextField tfTotal;
 	private JTextField tfSearchDate;
@@ -49,9 +54,18 @@ public class TicketsPanel extends SearchTableForm<Ticket> implements DialogAccep
 	private JButton btnSave;
 	private JButton btnNew;
 	
-	private TicketController ticketsController;
-	private ArticleController articleController;
+	private transient TicketController ticketsController;
+	private transient ArticleController articleController;
 	
+	/**
+	 * Crea un formulario para gestionar el elementos de tipo
+	 * {@link Ticket} a partir de controlador del tipo {@link ArticleController} y de
+	 * {@linkplain TicketController}.
+	 * @param controller controlador que será utilizado para realizar las operaciones
+	 * recuperación y persistencia de los elemenos gestionados en este formulario
+	 * @param articleController controlador del modelo de datos {@link Article} que serán utilizado
+	 * para recuperar todos los artículos disponibles cuando sean necesarios
+	 */
 	public TicketsPanel(TicketController controller, ArticleController articleController)
 	{
 		this.ticketsController = controller;
@@ -72,15 +86,15 @@ public class TicketsPanel extends SearchTableForm<Ticket> implements DialogAccep
 
 	private void setUpLabels()
 	{
-		lblDate = new JLabel("Fecha");
+		JLabel lblDate = new JLabel("Fecha");
 		lblDate.setBounds(264, 15, 46, 14);
 		add(lblDate);
 
-		lblLneas = new JLabel("L\u00EDneas");
+		JLabel lblLneas = new JLabel("L\u00EDneas");
 		lblLneas.setBounds(264, 49, 46, 14);
 		add(lblLneas);
 
-		lblTotal = new JLabel("Total");
+		JLabel lblTotal = new JLabel("Total");
 		lblTotal.setBounds(264, 243, 46, 14);
 		add(lblTotal);
 	}
@@ -129,20 +143,20 @@ public class TicketsPanel extends SearchTableForm<Ticket> implements DialogAccep
 
 	private void setUpTables()
 	{
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(10, 43, 234, 251);
-		add(scrollPane);
+		JScrollPane ticketTablescrollPane = new JScrollPane();
+		ticketTablescrollPane.setBounds(10, 43, 234, 251);
+		add(ticketTablescrollPane);
 
 		tableTickets = new TicketTable();
-		scrollPane.setViewportView(tableTickets);
+		ticketTablescrollPane.setViewportView(tableTickets);
 		tableTickets.refill(ticketsController.fetchAll());
 
-		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(309, 49, 219, 168);
-		add(scrollPane_1);
+		JScrollPane ticketLineTablescrollPane = new JScrollPane();
+		ticketLineTablescrollPane.setBounds(309, 49, 219, 168);
+		add(ticketLineTablescrollPane);
 
 		tableLines = new TicketLineTable();
-		scrollPane_1.setViewportView(tableLines);
+		ticketLineTablescrollPane.setViewportView(tableLines);
 	}
 	
 	private void setUpListeners()
