@@ -23,9 +23,9 @@ public class DateUtil
 	 * <li><code>d-M[M]-yyyy</code></li>
 	 * <li><code>d-M[M]-yy</code></li>
 	 * </ul>
-	 * @param stringDate
-	 * @return
-	 * @throws DateTimeParseException
+	 * @param stringDate la cadena de texto que contiene la fecha que se quiere parsear
+	 * @return la representación de la fecha <code>stringDate</code> como {@link LocalDate}
+	 * @throws DateTimeParseException si <code>stringDate</code> contiene un formato no válido
 	 */
 	public static LocalDate toLocalDate(String stringDate) throws DateTimeParseException
 	{

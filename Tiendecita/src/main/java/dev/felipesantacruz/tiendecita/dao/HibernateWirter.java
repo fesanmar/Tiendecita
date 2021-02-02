@@ -20,7 +20,8 @@ public abstract class HibernateWirter
 	/**
 	 * Crea un ejecutor de operaciones que hace uso de la fábrica de sesiones de <code>Hibernate</code>
 	 * <code>sessionFactory</code>
-	 * @param sessionFactory
+	 * @param sessionFactory la fábrica de sesiones que será utilizada para generar las sesiones dentro
+	 * de las cuales se ejecutan las operaciones de persistencia con el método {@link #execute(WriteOperation)}
 	 */
 	protected HibernateWirter(SessionFactory sessionFactory)
 	{
@@ -29,7 +30,7 @@ public abstract class HibernateWirter
 	
 	/**
 	 * Devuelve la fábrica de sesiones que se está utiliznado para crear las sesiones dentro
-	 * de las cuales se ejecutan las operaciones de persistencia con el método {@link #execute(WriteOperation).}
+	 * de las cuales se ejecutan las operaciones de persistencia con el método {@link #execute(WriteOperation)}
 	 * @return una fábrica de sesiones de tipo {@link SessionFactory}
 	 */
 	public SessionFactory getSessionFactory()

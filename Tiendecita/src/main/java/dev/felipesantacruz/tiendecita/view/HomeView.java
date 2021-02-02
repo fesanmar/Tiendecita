@@ -64,6 +64,7 @@ public class HomeView extends JFrame implements WindowListener, DateFromToSubscr
 
 	/**
 	 * Lanza esta aplicación.
+	 * @param args no se están utililizando los argumentos
 	 * @throws ClassNotFoundException si el no es encuentra el Look And Feel.
 	 */
 	public static void main(String[] args) throws ClassNotFoundException

@@ -92,7 +92,7 @@ public abstract class NotEditableTableModelTemplate<T> extends AbstractTableMode
 	/**
 	 * Devuelve un <code>Array</code> bidimensional con los datos contenidos en este <code>TableModel</code>
 	 * y, por lo tanto, de la table que le esté dando uso 
-	 * @return
+	 * @return <code>Array</code> bidimensional que contiene todos los tados del modelo de datos
 	 */
 	protected Object[][] getData()
 	{
@@ -139,7 +139,7 @@ public abstract class NotEditableTableModelTemplate<T> extends AbstractTableMode
 	 * Devuelve el índice, es decir, el número de fila, que ocupa <code>element</code> dentro
 	 * del <code>TableModel</code> y, por lo tanto, de la table que le esté dando uso 
 	 * @param element el ítem del que se quiere conocer la ubicación
-	 * @return el número de fila que ocupa <code>element</code> dentro del code>TableModel</code>.
+	 * @return el número de fila que ocupa <code>element</code> dentro del <code>TableModel</code>.
 	 * Devolverá <code>-1</code> en el caso de que <code>element</code> no sea encontrado
 	 */
 	public int getIndexOf(Object element)

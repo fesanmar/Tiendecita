@@ -7,7 +7,7 @@ import dev.felipesantacruz.tiendecita.model.TicketLine;
 import dev.felipesantacruz.tiendecita.view.custom.NotEditableTableModelTemplate;
 
 /**
- * <TableModel> para gestionar los datos del modelo {@link TicketLine} en unión con un
+ * <code>TableModel</code> para gestionar los datos del modelo {@link TicketLine} en unión con un
  * <code>JTable</code>. Es una subclase de 
  * {@link NotEditableTableModelTemplate}.
  * @author Felipe Santa-Cruz
@@ -21,7 +21,7 @@ public class TicketLinesTableModel extends NotEditableTableModelTemplate<TicketL
 	
 
 	/**
-	 * Crea un <TableModel> para gestionar los datos el modelo {@link TicketLine}.
+	 * Crea un<code>TableModel</code> para gestionar los datos el modelo {@link TicketLine}.
 	 * Será usado para rellenar las filas de una <code>JTable</code>.
 	 */
 	public TicketLinesTableModel()
@@ -30,7 +30,7 @@ public class TicketLinesTableModel extends NotEditableTableModelTemplate<TicketL
 	}
 	
 	/**
-	 * Crea un <TableModel> para gestionar los datos el modelo {@link TicketLine} y lo rellena
+	 * Crea un <code>TableModel</code> para gestionar los datos el modelo {@link TicketLine} y lo rellena
 	 * con los datos encapsulados dentro de <code>iterator</code>
 	 * Será usado para rellenar las filas de una <code>JTable</code>.
 	 * @param iterator un <code>Iterator</code> con los datos que poblarán las filas de este

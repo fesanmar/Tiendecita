@@ -55,7 +55,7 @@ public abstract class RefillableJTableTemplate<T> extends JTable
 	
 	/**
 	 * Rellena la tabla con los datos proporcionados en <code>ite</code>.
-	 * @param it el <code>Iterator</code> que contendrá los datos con los que rellenar la tabla,
+	 * @param iterator el <code>Iterator</code> que contendrá los datos con los que rellenar la tabla,
 	 * de forma que cada elemento dentro del iterador, se mapeará a las columnas de una fila. Esto
 	 * se realiza a través del método {@link NotEditableTableModelTemplate#fillNewRow(Object[], Object)}
 	 */

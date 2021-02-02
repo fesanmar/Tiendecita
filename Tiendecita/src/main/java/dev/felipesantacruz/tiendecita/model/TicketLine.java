@@ -115,6 +115,7 @@ public class TicketLine
 	/**
 	 * Establece el número de unidades que se venderá en esta línea de ticket.
 	 * El artículo se establece mediante el método {@link #setArticle(Article)}
+	 * @param quantity el número de artículos que se venderán en esta línea de ticket
 	 */
 	public void setQuantity(int quantity)
 	{

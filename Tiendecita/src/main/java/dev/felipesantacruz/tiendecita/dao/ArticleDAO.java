@@ -15,9 +15,10 @@ public interface ArticleDAO
 {
 	/**
 	 * Devuelve todos los artíuclos cuya descripción coincida con <code>description</code>
-	 * @param date la cadena de texto utilizada para realizar la búsqueda de artículos
+	 * @param description la cadena de texto utilizada para realizar la búsqueda de artículos
 	 * @return un objeto del tipo <code>Collection</code> con tods los artículos
 	 * cuya descripción coincida con <code>description</code>
+	 * @see Collection
 	 */
 	Collection<Article> findByDescription(String description);
 	

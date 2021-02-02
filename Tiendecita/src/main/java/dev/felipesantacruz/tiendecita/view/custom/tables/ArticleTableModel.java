@@ -6,7 +6,7 @@ import dev.felipesantacruz.tiendecita.model.Article;
 import dev.felipesantacruz.tiendecita.view.custom.NotEditableTableModelTemplate;
 
 /**
- * <TableModel> para gestionar los datos del modelo {@link Article} en unión con un
+ * <code>TableModel</code> para gestionar los datos del modelo {@link Article} en unión con un
  * <code>JTable</code>. Es una subclase de 
  * {@link NotEditableTableModelTemplate}.
  * @author Felipe Santa-Cruz
@@ -19,7 +19,7 @@ public class ArticleTableModel extends NotEditableTableModelTemplate<Article>
 	private static String[] columns = { "Artículo", "Precio", "Stock" };	
 	
 	/**
-	 * Crea un <TableModel> para gestionar los datos el modelo {@link Article}.
+	 * Crea un <code>TableModel</code> para gestionar los datos el modelo {@link Article}.
 	 * Será usado para rellenar las filas de una <code>JTable</code>.
 	 */
 	public ArticleTableModel()
@@ -28,7 +28,7 @@ public class ArticleTableModel extends NotEditableTableModelTemplate<Article>
 	}
 	
 	/**
-	 * Crea un <TableModel> para gestionar los datos el modelo {@link Article} y lo rellena
+	 * Crea un <code>TableModel</code> para gestionar los datos el modelo {@link Article} y lo rellena
 	 * con los datos encapsulados dentro de <code>articles</code>
 	 * Será usado para rellenar las filas de una <code>JTable</code>.
 	 * @param articles un <code>Iterator</code> con los datos que poblarán las filas de este

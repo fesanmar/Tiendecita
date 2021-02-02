@@ -31,7 +31,7 @@ public interface Controller<T>
 	 * Recupera todos los elementos disponibles en este controlador. Por ejemplo, 
 	 * podria devolver todos los ítems guardados en una base de datos, en un fichero 
 	 * o símplemente en una lista.
-	 * @return un  <code>Iterator</code> con los elementos del tipo <T> administrados
+	 * @return un <code>Iterator</code> con los elementos del tipo {@link T} administrados
 	 * por este controlador 
 	 */
 	public Iterator<T> fetchAll();
