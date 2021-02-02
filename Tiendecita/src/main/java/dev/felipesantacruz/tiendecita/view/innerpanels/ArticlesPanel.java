@@ -295,7 +295,9 @@ public class ArticlesPanel extends SearchTableForm<Article>
 	
 	private void searchByDescriptionAndRefillTable()
 	{
+		tableArticles.getSelectionModel().removeListSelectionListener(getTableSelectionListener());
 		tableArticles.refill(controller.fetchArticlesWithDescription(tfSearch.getText()));
+		tableArticles.getSelectionModel().addListSelectionListener(getTableSelectionListener());
 	}
 
 	private void setUpSelectionListeners()
