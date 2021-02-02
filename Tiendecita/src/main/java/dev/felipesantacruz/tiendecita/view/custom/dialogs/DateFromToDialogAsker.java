@@ -22,6 +22,12 @@ import dev.felipesantacruz.tiendecita.utils.DateFromToSubscriber;
 import dev.felipesantacruz.tiendecita.utils.DateUtil;
 import dev.felipesantacruz.tiendecita.view.custom.DateFormattedTextField;
 
+/**
+ * Diálogo en el que se preguntará al usuario que introduzca los datos de la <i>fecha desde</i> 
+ * y la <i>fecha hasta</i>.
+ * @author Felipe Santa-Cruz
+ * @version 1.0
+ */
 public class DateFromToDialogAsker extends JDialog
 {
 	private static final long serialVersionUID = 1L;
@@ -30,18 +36,23 @@ public class DateFromToDialogAsker extends JDialog
 	private JFormattedTextField tfTo;
 	private LocalDate dateFrom;
 	private LocalDate dateTo;
-	private DateFromToSubscriber publisher;
+	private transient DateFromToSubscriber publisher;
 
 
+	
 	/**
-	 * Create the dialog.
-	 * 
-	 * @throws ParseException
+	 * Crea el dálogo que recoge los datos de la <i>fecha desde</i> y la <i>fecha hasta</i>.
+	 * @param f la ventana padre de este diálogo
+	 * @param subscriber el susbcritor que recibirá la <i>fecha desde</i> y la <i>fecha hasta</i>
+	 * cuando sean establecidas por el usuario
+	 * @throws ParseException si ocurre un error de parseo inesperado durante la creación de los
+	 * campos tipo fecha.
+	 * @see dev.felipesantacruz.tiendecita.view.custom.DateFormattedTextField
 	 */
-	public DateFromToDialogAsker(JFrame f, DateFromToSubscriber publisher) throws ParseException
+	public DateFromToDialogAsker(JFrame f, DateFromToSubscriber subscriber) throws ParseException
 	{
 		super(f);
-		this.publisher = publisher;
+		this.publisher = subscriber;
 		setTitle("Consulta tickets");
 		setBounds(100, 100, 240, 171);
 		getContentPane().setLayout(new BorderLayout());
@@ -71,7 +82,7 @@ public class DateFromToDialogAsker extends JDialog
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 	}
 
-	void setUpButtonPane()
+	private void setUpButtonPane()
 	{
 		JPanel buttonPane = new JPanel();
 		buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
@@ -81,7 +92,7 @@ public class DateFromToDialogAsker extends JDialog
 	}
 
 
-	void setUpAcceptanceButton(JPanel buttonPane)
+	private void setUpAcceptanceButton(JPanel buttonPane)
 	{
 		JButton okButton = new JButton("OK");
 		okButton.addActionListener(e -> publishUserDataIfValid());
@@ -90,7 +101,7 @@ public class DateFromToDialogAsker extends JDialog
 		getRootPane().setDefaultButton(okButton);
 	}
 	
-	void publishUserDataIfValid()
+	private void publishUserDataIfValid()
 	{
 		if (userDataIsValid())
 			publishUserData();
@@ -111,7 +122,7 @@ public class DateFromToDialogAsker extends JDialog
 		}
 	}
 
-	void publishUserData()
+	private void publishUserData()
 	{
 		if (dateFrom.isBefore(dateTo))
 			publishUserDataAndDispose();
@@ -119,7 +130,7 @@ public class DateFromToDialogAsker extends JDialog
 			showReportErrorMessasge("La fecha 'desde' debe ser anterior a la fecha 'hasta'.");
 	}
 
-	void publishUserDataAndDispose()
+	private void publishUserDataAndDispose()
 	{
 		publisher.update(
 				Timestamp.valueOf(LocalDateTime.of(dateFrom, LocalTime.MIN)),
@@ -127,7 +138,7 @@ public class DateFromToDialogAsker extends JDialog
 		dispose();
 	}
 	
-	void showReportErrorMessasge(String msg)
+	private void showReportErrorMessasge(String msg)
 	{
 		JOptionPane.showMessageDialog(this,
 			    msg,
@@ -135,7 +146,7 @@ public class DateFromToDialogAsker extends JDialog
 			    JOptionPane.ERROR_MESSAGE);
 	}
 	
-	void setUpCancelButton(JPanel buttonPane)
+	private void setUpCancelButton(JPanel buttonPane)
 	{
 		JButton cancelButton = new JButton("Cancelar");
 		cancelButton.addActionListener(e -> dispose());
