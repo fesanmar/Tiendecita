@@ -8,7 +8,8 @@ import dev.felipesantacruz.tiendecita.model.Article;
  * Representa el conjunto de operaciones de consulta y persistencia 
  * que se pueden realizar sobre el modelo de datos {@link Article}
  * @author Felipe Santa-Cruz
- *
+ * @version 1.0
+ * 
  */
 public interface ArticleDAO
 {

@@ -13,7 +13,8 @@ import dev.felipesantacruz.tiendecita.model.Article;
  * Representa el enlace con un repositorio de elementos de tipo {@link Article}, en el que se pueden realizar
  * diversas operaciones de persistencia y de lecutura.
  * @author Felipe Santa-Cruz
- *
+ * @version 1.0
+ * 
  */
 public class ArticleDatabaseDAO extends HibernateWirter implements ArticleDAO
 {

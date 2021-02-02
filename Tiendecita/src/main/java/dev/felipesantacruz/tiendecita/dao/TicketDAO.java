@@ -9,7 +9,8 @@ import dev.felipesantacruz.tiendecita.model.Ticket;
  * Representa el conjunto de operaciones de consulta y persistencia 
  * que se pueden realizar sobre el modelo de datos {@link Ticket}
  * @author Felipe Santa-Cruz
- *
+ * @version 1.0
+ * 
  */
 public interface TicketDAO
 {

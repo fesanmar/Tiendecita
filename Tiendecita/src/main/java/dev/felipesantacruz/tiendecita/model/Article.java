@@ -12,7 +12,8 @@ import javax.persistence.Table;
 /**
  * Representa un artículo a la venta de nuestra <b>Tiendecita</b>.
  * @author Felipe Santa-Cruz
- *
+ * @version 1.0
+ * 
  */
 @Entity
 @Table(name = "article")

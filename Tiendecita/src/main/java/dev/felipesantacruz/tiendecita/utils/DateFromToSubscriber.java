@@ -6,7 +6,8 @@ import java.sql.Timestamp;
  * Representa un suscriptor que quiere ser avisado cada vez se publica
  * un nuevo par de fechas: fecha desde, fecha hasta.
  * @author Felipe Santa-Cruz
- *
+ * @version 1.0
+ * 
  */
 @FunctionalInterface
 public interface DateFromToSubscriber

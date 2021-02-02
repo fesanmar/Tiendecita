@@ -9,7 +9,8 @@ import dev.felipesantacruz.tiendecita.model.Ticket;
 /**
  * Implementación de la interfaz {@link Controller} para el model de datos {@link Ticket}
  * @author Felipe Santa-Cruz
- *
+ * @version 1.0
+ * 
  */
 public class TicketController implements Controller<Ticket>
 {

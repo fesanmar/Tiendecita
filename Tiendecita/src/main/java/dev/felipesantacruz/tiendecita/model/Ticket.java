@@ -20,7 +20,8 @@ import javax.persistence.Table;
 /**
  * Representa un ticket de venta de <b>Tiendecita</b>.
  * @author Felipe Santa-Cruz
- *
+ * @version 1.0
+ * 
  */
 @Entity
 @Table(name = "ticket")

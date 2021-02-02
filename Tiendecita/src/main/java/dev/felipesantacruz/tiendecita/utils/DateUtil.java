@@ -7,7 +7,8 @@ import java.time.format.DateTimeParseException;
 /**
  * Utilidades para trabajar con fechas
  * @author Felipe Santa-Cruz
- *
+ * @version 1.0
+ * 
  */
 public class DateUtil
 {

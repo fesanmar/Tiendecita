@@ -8,7 +8,8 @@ import dev.felipesantacruz.tiendecita.model.Article;
 /**
  * Implementación de la interfaz {@link Controller} para el model de datos {@link Article}
  * @author Felipe Santa-Cruz
- *
+ * @version 1.0
+ * 
  */
 public class ArticleController implements Controller<Article>
 {

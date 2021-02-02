@@ -7,7 +7,7 @@ import java.util.Iterator;
  * Permite realizar operaciones como obtener todos los items del modelo,
  * fijar un ítem como el ítem activo, persistirlo y recuperarlo.
  * @author Felipe Santa-Cruz
- *
+ * @version 1.0
  * @param <T> El tipo con el que va a operar el controlador, el que será usado 
  * como parámetro y como tipo de retorno en los métodos.
  */

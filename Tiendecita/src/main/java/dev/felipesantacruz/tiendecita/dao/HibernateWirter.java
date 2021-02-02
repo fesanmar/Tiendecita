@@ -9,7 +9,8 @@ import org.hibernate.Transaction;
  * Esta operaciones se llevan a cabo bajo el amparo de la implementación de 
  * <code>JPA</code> <code>Hibernate</code> 
  * @author Felipe Santa-Cruz
- *
+ * @version 1.0
+ * 
  */
 public abstract class HibernateWirter
 {

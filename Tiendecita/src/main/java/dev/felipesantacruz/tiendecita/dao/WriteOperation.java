@@ -5,7 +5,8 @@ import org.hibernate.Session;
 /**
  * Representa una operación de escritura en una base de datos.
  * @author Felipe Santa-Cruz
- *
+ * @version 1.0
+ * 
  */
 @FunctionalInterface interface WriteOperation
 {

@@ -25,7 +25,8 @@ import net.sf.jasperreports.engine.util.JRLoader;
 /**
  * Generador de informes de <b>Tiendecita</b>.
  * @author Felipe Santa-Cruz
- *
+ * @version 1.0
+ * 
  */
 public class JRTiendecitaReport implements ReportService
 {
