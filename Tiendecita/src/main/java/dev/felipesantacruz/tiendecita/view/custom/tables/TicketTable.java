@@ -9,6 +9,12 @@ import dev.felipesantacruz.tiendecita.model.Ticket;
 import dev.felipesantacruz.tiendecita.view.custom.NotEditableTableModelTemplate;
 import dev.felipesantacruz.tiendecita.view.custom.RefillableJTableTemplate;
 
+/**
+ * Tabla que contendrá los datos del modelo {@link Ticket}. Es una subclase
+ * de la clase abstracta {@link RefillableJTableTemplate}.
+ * @author Felipe Santa-Cruz
+ * @version 1.0 
+ */
 public class TicketTable extends RefillableJTableTemplate<Ticket>
 {
 	private static final long serialVersionUID = 1L;
