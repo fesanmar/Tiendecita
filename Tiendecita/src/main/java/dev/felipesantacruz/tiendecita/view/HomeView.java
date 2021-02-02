@@ -40,6 +40,12 @@ import dev.felipesantacruz.tiendecita.view.innerpanels.TicketsPanel;
 import net.sf.jasperreports.engine.JRException;
 
 
+/**
+ * Punto de entrada a la aplicación. Contiene el método <code>main</code> y una clase interna
+ * que representa el frame principal del programa.
+ * @author Felipe Santa-Cruz
+ * @version 1.0
+ */
 public class HomeView extends JFrame implements WindowListener, DateFromToSubscriber
 {
 	private static final long serialVersionUID = 1L;
